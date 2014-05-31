@@ -38,7 +38,7 @@ title: 面向接口编程之提炼接口（Objective-C ）
 
 <span>下面，以我们最近项目遇到的问题来讲述接口在我们ON项目中的运用。该项目中需要实现一个展示文件列表，文件下载、展示、保存、删除等一系列操作的功能，这是个非常常见的功能，如微博，信息等都有类似展示列表，列表条目下载、展示、保存和删除等。功能So Easy，时间紧迫，我们直接得出V1.0的版本：</span>
 <h3>1. V1.0版本</h3>
-<p style="text-align: center;"><a href="{% asset_path images/2013-12-31-Oriented-Protocol/1.png}"><img class="aligncenter size-medium wp-image-317" alt="1" src="{% asset_path images/2013-12-31-Oriented-Protocol/1.png}" width="300" height="216" /></a></p>
+<p style="text-align: center;"><a href="{% asset_path images/2013-12-31-Oriented-Protocol/1.png %}"><img class="aligncenter size-medium wp-image-317" alt="1" src="{% asset_path images/2013-12-31-Oriented-Protocol/1.png %}" width="300" height="216" /></a></p>
 <p style="text-align: center;"><em>（架构示意图1）</em></p>
 <span>Class: ONFile，文件Model类，承载文件信息，其对象是文件操作的实体。</span>
 <div class="km_insert_code">
@@ -97,7 +97,7 @@ title: 面向接口编程之提炼接口（Objective-C ）
 <h3>2. V1.1版本</h3>
 <span>假如你也觉得这样就完了，那你也像当年的我一样——Too young too simple！虐你千万遍的需求变更：接入其他服务A的文件，功能类似，展示有细微区别。这难不倒撸主，解决的方案是：因为服务A的文件系统的信息与ONFile基本一致，所以维持当前的结构不变，引入的服务A的文件继承自类ONFile，派生出子类ONAFile，这个时候，架构示意图看起来如下：</span>
 
-<a href="{% asset_path images/2013-12-31-Oriented-Protocol/2.png}"><img class="aligncenter size-medium wp-image-318" alt="2" src="{% asset_path images/2013-12-31-Oriented-Protocol/2.png}" width="300" height="215" /></a>
+<a href="{% asset_path images/2013-12-31-Oriented-Protocol/2.png %}"><img class="aligncenter size-medium wp-image-318" alt="2" src="{% asset_path images/2013-12-31-Oriented-Protocol/2.png %}" width="300" height="215" /></a>
 <p style="text-align: center;"><em style="line-height: 2em;">（架构示意图2）</em></p>
 <span>代码中假如了少量的判断分支语句，看起来有点难看，但尚可接受。</span>
 <h3>3. V1.2版本 ~ V1.X版本</h3>
@@ -111,7 +111,7 @@ title: 面向接口编程之提炼接口（Objective-C ）
 <span>当你发现你所要支持的信息展示之复杂，已经超出了你当初设计可承载的时候，你是会继续沿用就有的设计，加入更多的判断分支处理相同功能中的部分差异，复制粘贴更多的相同的处理代码来处理差异信息中的部分相同功能？亦或者是，重构你的设计，让之前未考虑清除的可扩展性回到你的设计中。</span>
 
 <span>所以，我们开始了接口编程：</span>
-<p style="text-align: center;"><a href="{% asset_path images/2013-12-31-Oriented-Protocol/3.png}"><img class="aligncenter size-medium wp-image-319" alt="3" src="{% asset_path images/2013-12-31-Oriented-Protocol/3.png}" width="258" height="300" /></a></p>
+<p style="text-align: center;"><a href="{% asset_path images/2013-12-31-Oriented-Protocol/3.png %}"><img class="aligncenter size-medium wp-image-319" alt="3" src="{% asset_path images/2013-12-31-Oriented-Protocol/3.png %}" width="258" height="300" /></a></p>
 <p style="text-align: center;"><em>（架构示意图3）</em></p>
 <span>接口化之后，有以下几个优点：</span>
 <span>1）<b>可扩展性</b>：可扩展性主要体现在以下两个方面：</span>
