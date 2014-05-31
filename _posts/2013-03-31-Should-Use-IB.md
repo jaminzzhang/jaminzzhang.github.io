@@ -15,7 +15,7 @@ title: UITableView 快速滑动和简化控制器 ——《iOS 6编程实战》�
 
 可以使用Instruments中的Core Animation来比较有半透明混合图层和没有半透明混合图层的TableView滑动的帧数（勾选Color Blended Layers 可以看到标记会红色的半透明图层，如图）。勾选会发现使用drawRect画上去的tableView滚动帧数更大。
 
-![Color Blended Layers 展示的图片](/_images/2013-03/iphone_render.png)
+![Color Blended Layers 展示的图片]({% asset_path images/2013-03-31-Should-Use-IB/iphone_render.png})
 
 Color Blended Layers 展示的图片
 
@@ -33,7 +33,8 @@ FeedCell中绑定数据的方法：
     self.titleLabel.text = feedToBeDisplayed.text;    
     self.timeStampLabel.text = feedToBeDisplayed.modifiedDateString;
     ...
-}`
+}`  
+
 
 这个绑定方法可以可以在Cell的子类里做，也可以使用Category分类类来实现。如需要显示订阅，则使用bindSubscription:(Subscription*)subsription这样的绑定方式。假如使用了UITableViewCell的子类，需要显示更不同的Feed类，如TechFeed，可以用protocol定义接口来进行泛绑定：-(void) bindFeed:(id)feed，以便子类继承重载。
 
