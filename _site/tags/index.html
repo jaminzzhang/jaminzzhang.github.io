@@ -2,10 +2,10 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en-us">
   <head>
     <meta http-equiv="content-type" content="text/html; charset=utf-8" />
-    <meta name="author" content="{{ site.author }}" />
-    <title>{{ page.title }} | {{ site.author }}</title>
+    <meta name="author" content="jaminzzhang" />
+    <title>tags | jaminzzhang</title>
     <link rel="shortcut icon" href="/favicon.ico">
-    <link href="/feed/" rel="alternate" title="{{ site.author }}" type="application/atom+xml" />
+    <link href="/feed/" rel="alternate" title="jaminzzhang" type="application/atom+xml" />
     <link rel="stylesheet" href="/media/css/style.css">
     <link rel="stylesheet" href="/media/css/highlight.css">
     <script type="text/javascript" src="/media/js/jquery-1.7.1.min.js"></script>
@@ -40,7 +40,7 @@
     <div id="container">
       <div id="main" role="main">
         <header>
-        <h1>{{ page.title }}</h1>
+        <h1>tags</h1>
         </header>
         <nav>
         <span><a title="home page" class="" href="/">Home</a></span>
@@ -52,12 +52,47 @@
         <span><a title="subscribe by RSS" class="" href="/feed/">Subscribe</a></span>
         </nav>
         <article class="content">
-        {{ content }}
+        <section class="post">
+<div id='tag_cloud'>
+
+</div>
+
+
+
+
+<ul class="listing">
+
+</ul>
+
+
+
+
+<script src="/media/js/jquery.tagcloud.js" type="text/javascript" charset="utf-8"></script>
+
+
+<p></p>
+
+<script language="javascript">
+$.fn.tagcloud.defaults = {
+    size: {start: 1, end: 1, unit: 'em'},
+      color: {start: '#f8e0e6', end: '#ff3333'}
+};
+
+$(function () {
+    $('#tag_cloud a').tagcloud();
+});
+</script>
+
+
+</section>
+
+
+
         </article>
       </div>
 
     <footer>
-        <p><small>Powered by <a href="https://github.com/mojombo/jekyll">Jekyll</a> & <a href="http://pages.github.com">GitHub</a> | Copyright 2012 - {{site.time | date:"%Y"}} by <a href="/about/">webfrogs</a> | <span class="label label-info" id="timeSpan"></span></small></p>
+        <p><small>Powered by <a href="https://github.com/mojombo/jekyll">Jekyll</a> & <a href="http://pages.github.com">GitHub</a> | Copyright 2012 - 2014 by <a href="/about/">webfrogs</a> | <span class="label label-info" id="timeSpan"></span></small></p>
     </footer>
 
     </div>

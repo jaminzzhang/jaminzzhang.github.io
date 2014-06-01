@@ -2,10 +2,10 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en-us">
   <head>
     <meta http-equiv="content-type" content="text/html; charset=utf-8" />
-    <meta name="author" content="{{ site.author }}" />
-    <title>{{ page.title }} | {{ site.author }}</title>
+    <meta name="author" content="jaminzzhang" />
+    <title>ARC代码特性分析——《iOS 6编程实战》读书笔记(1) | jaminzzhang</title>
     <link rel="shortcut icon" href="/favicon.ico">
-    <link href="/feed/" rel="alternate" title="{{ site.author }}" type="application/atom+xml" />
+    <link href="/feed/" rel="alternate" title="jaminzzhang" type="application/atom+xml" />
     <link rel="stylesheet" href="/media/css/style.css">
     <link rel="stylesheet" href="/media/css/highlight.css">
     <script type="text/javascript" src="/media/js/jquery-1.7.1.min.js"></script>
@@ -40,7 +40,7 @@
     <div id="container">
       <div id="main" role="main">
         <header>
-        <h1>{{ page.title }}</h1>
+        <h1>ARC代码特性分析——《iOS 6编程实战》读书笔记(1)</h1>
         </header>
         <nav>
         <span><a title="home page" class="" href="/">Home</a></span>
@@ -52,12 +52,44 @@
         <span><a title="subscribe by RSS" class="" href="/feed/">Subscribe</a></span>
         </nav>
         <article class="content">
-        {{ content }}
+        <h2>ARC代码特性分析——《iOS 6编程实战》读书笔记(1)</h2>
+
+
+
+
+<p>目前很多项目开展可能需要兼顾一些旧库或者项目，因此没有使用ARC，但ARC还是一个非常好的东西，不仅能够大大加快开发效率，内存溢出问题也大大减少，而且使用ARC编译的程序速度会更快。
+
+
+<h3>ARC内部原理</h3>
+
+
+<h3>ARC运用注意事项：</h3>
+
+
+ARC是编译器的特性，工作在编译期，自动为代码的retain和release配对，而不是在运行期，因此与内存垃圾回收机制不一样。编写ARC代码需要注意以下几个问题：
+<ol>
+    <li><strong>不要调用retain， release和autorelease</strong>。也不可以覆盖这几个方法（以前写singleton经常会覆盖这几个方法来保证运行中只有一个实例对象）。</li>
+    <li><strong>dealloc方法内不释放实例变量</strong>。如需在dealloc时删除KVO等观察而需要重载dealloc时，不要调用[super dealloc]。</li>
+    <li><strong>C语言结构体中不要有对象指针</strong>。有些C语言结构中可能要包含对象，可以把它转换成void*类型来使用。因为假如代码后面调用了free方法来销毁一个C语言结构体，会影响到对结构体中对象的自动跟踪。</li>
+    <li><strong>id和void*类型只能通过桥接转换进行转换</strong>。在使用Core Foundation的代码中会有这种情况。</li>
+    <li><strong>不要使用NSAutoreleasePool</strong>。不要手动创建自己的自动释放池，而应该使用@autoreleasepool{}代码块。<strong>注意：@autoreleasepool比NSAutoreleasePool快了大约20倍。</strong></li>
+    <li><strong>需要注意命名规范</strong>。由于ARC是编译期检查代码进行工作的，假如以copy，retain等前缀命名的方法的话，ARC会自动在在该方法上进行retain，在调用的时候release，会影响效率，而且当方法和调用者没有一起使用ARC时会出现野指针或者内存溢出的问题。需要注意，符合驼峰式大小写方式命名的copyRight会有这个问题，而copyright不会有这个问题。</li>
+
+<li><strong>注意在Block中的循环引用</strong>。
+</ol>
+编写完代码之后，可以使用Xcode的Edit-&gt;Refactor-&gt;Convert to Objective-C ARC来检查或者转换。</p>
+
+
+
+
+<p>23 Mar 2013</p>
+
+
         </article>
       </div>
 
     <footer>
-        <p><small>Powered by <a href="https://github.com/mojombo/jekyll">Jekyll</a> & <a href="http://pages.github.com">GitHub</a> | Copyright 2012 - {{site.time | date:"%Y"}} by <a href="/about/">webfrogs</a> | <span class="label label-info" id="timeSpan"></span></small></p>
+        <p><small>Powered by <a href="https://github.com/mojombo/jekyll">Jekyll</a> & <a href="http://pages.github.com">GitHub</a> | Copyright 2012 - 2014 by <a href="/about/">webfrogs</a> | <span class="label label-info" id="timeSpan"></span></small></p>
     </footer>
 
     </div>

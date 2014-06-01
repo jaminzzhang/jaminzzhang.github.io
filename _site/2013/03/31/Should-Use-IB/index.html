@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en-us">
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <meta name="author" content="jaminzzhang" />
+    <title>UITableView 快速滑动和简化控制器 ——《iOS 6编程实战》读书笔记(3) | jaminzzhang</title>
+    <link rel="shortcut icon" href="/favicon.ico">
+    <link href="/feed/" rel="alternate" title="jaminzzhang" type="application/atom+xml" />
+    <link rel="stylesheet" href="/media/css/style.css">
+    <link rel="stylesheet" href="/media/css/highlight.css">
+    <script type="text/javascript" src="/media/js/jquery-1.7.1.min.js"></script>
+  </head>
+  <script type="text/javascript">
+    function setTimeSpan(){
+    	var date = new Date();
+    	timeSpan.innerText=date.format('yyyy-MM-dd hh:mm:ss');
+    }
+    
+    Date.prototype.format = function(format)
+		{
+    var o =
+    	{
+    	    "M+" : this.getMonth()+1, //month
+    	    "d+" : this.getDate(),    //day
+    	    "h+" : this.getHours(),   //hour
+    	    "m+" : this.getMinutes(), //minute
+    	    "s+" : this.getSeconds(), //second
+    	    "q+" : Math.floor((this.getMonth()+3)/3),  //quarter
+    	    "S" : this.getMilliseconds() //millisecond
+    	}
+    	if(/(y+)/.test(format))
+    	format=format.replace(RegExp.$1,(this.getFullYear()+"").substr(4 - RegExp.$1.length));
+    	for(var k in o)
+    	if(new RegExp("("+ k +")").test(format))
+    	format = format.replace(RegExp.$1,RegExp.$1.length==1 ? o[k] : ("00"+ o[k]).substr((""+ o[k]).length));
+    	return format;
+		}
+  </script>
+  <body onLoad="setInterval(setTimeSpan,1000);">
+    <div id="container">
+      <div id="main" role="main">
+        <header>
+        <h1>UITableView 快速滑动和简化控制器 ——《iOS 6编程实战》读书笔记(3)</h1>
+        </header>
+        <nav>
+        <span><a title="home page" class="" href="/">Home</a></span>
+        <span><a title="about" class="" href="/about/">About</a></span>
+        <span><a title="guestbook" class="" href="/guestbook/">Guestbook</a></span>
+        <span><a title="categories" class="" href="/categories/">Categories</a></span>
+        <span><a title="tags" class="" href="/tags/">Tags</a></span>
+        <span><a title="links" class="" href="/links/">Links</a></span>
+        <span><a title="subscribe by RSS" class="" href="/feed/">Subscribe</a></span>
+        </nav>
+        <article class="content">
+        <h2>UITableView 快速滑动和简化控制器 ——《iOS 6编程实战》读书笔记(3)</h2>
+
+
+<hr />
+
+<h3>1、提高UITableView的滚动速度</h3>
+
+<p>提高UITableView滚动速度的要点就是：每个Cell只使用一个Custom View，而这个View所有的内容都通过重写drawRect方法直接画上去。这是因为GPU渲染时，透明的混合图层会非常耗费资源。而drawRect是在做预渲染的工作。</p>
+
+<p>可以使用Instruments中的Core Animation来比较有半透明混合图层和没有半透明混合图层的TableView滑动的帧数（勾选Color Blended Layers 可以看到标记会红色的半透明图层，如图）。勾选会发现使用drawRect画上去的tableView滚动帧数更大。</p>
+
+<p><img src="/assets/images/2013-03-31-Should-Use-IB/iphone_render.png" alt="Color Blended Layers 展示的图片" /></p>
+
+<p>Color Blended Layers 展示的图片</p>
+
+<p>相关的阅读：<a href="http://blog.atebits.com/2008/12/fast-scrolling-in-tweetie-with-uitableview/">http://blog.atebits.com/2008/12/fast-scrolling-in-tweetie-with-uitableview</a> (这个连接貌似打不开了，可以打开：<a href="http://atebits.tumblr.com/post/197580827/fast-scrolling-in-tweetie-with-uitableview">http://atebits.tumblr.com/post/197580827/fast-scrolling-in-tweetie-with-uitableview</a>)</p>
+
+<h3>2、简化控制器内容</h3>
+
+<p>使用UITableView时，遇到处理复杂的非重复表单元，或者是在同一界面需要使用多个UITableView时，假如使用一个控制器（UIViewController）进行控制，就会让控制器代码变得庞大复杂，所以在设计和重构时需要考虑相关问题。处理这些问题的方法主要有两种：</p>
+
+<p>1.<strong>数据绑定:</strong> 即，将不同类型Cell需要展示的数据绑定到不同的子视图Cell上，简化控制器的代码维护工作。如RSS阅读器展示推送信息的FeedCell：
+FeedCell中绑定数据的方法：</p>
+
+<p><code>
+-(void) bindFeed:(Feed*) feedToBeDisplayed {
+    self.titleLabel.text = feedToBeDisplayed.text;    
+    self.timeStampLabel.text = feedToBeDisplayed.modifiedDateString;
+    ...
+}</code></p>
+
+<p>这个绑定方法可以可以在Cell的子类里做，也可以使用Category分类类来实现。如需要显示订阅，则使用bindSubscription:(Subscription*)subsription这样的绑定方式。假如使用了UITableViewCell的子类，需要显示更不同的Feed类，如TechFeed，可以用protocol定义接口来进行泛绑定：-(void) bindFeed:(id)feed，以便子类继承重载。</p>
+
+<p>2.使用多个UITableView时，注意将每个UITableView使用独立的控制器来管理对应的委托（delegate）和数据源（datasource），防止对个UITableView的委托和数据源混合。</p>
+
+<p>PS:控制器应该在模型与UI元素（在当前层定义的，而不是在子类层级定义的）之间扮演中介的角色。即UIViewController可以设置当前作用域内定义的的UI元素属性，而不要对子视图这样做。如
+<code>self.textLabel.text = NSLocalizedString(@"Hello", @"")</code> 是正确的代码，而<code>self.customView.textLabel.text = NSLocalizedString(@"Hello", @"")</code>则推荐使用绑定来实现。]]></p>
+
+<p>31 Mar 2013</p>
+
+
+        </article>
+      </div>
+
+    <footer>
+        <p><small>Powered by <a href="https://github.com/mojombo/jekyll">Jekyll</a> & <a href="http://pages.github.com">GitHub</a> | Copyright 2012 - 2014 by <a href="/about/">webfrogs</a> | <span class="label label-info" id="timeSpan"></span></small></p>
+    </footer>
+
+    </div>
+
+    <script type="text/javascript">
+      var _gaq = _gaq || [];
+      _gaq.push(['_setAccount', 'UA-34960818-1']);
+      _gaq.push(['_trackPageview']);
+      (function() {
+        var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+        ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+        var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+      })();
+    </script>
+
+    <!-- Baidu Button BEGIN -->
+		<script type="text/javascript" id="bdshare_js" data="type=slide&amp;img=4&amp;pos=right&amp;uid=541841" ></script>
+		<script type="text/javascript" id="bdshell_js"></script>
+		<script type="text/javascript">
+		var bds_config={"bdTop":170};
+		document.getElementById("bdshell_js").src = "http://bdimg.share.baidu.com/static/js/shell_v2.js?cdnversion=" + Math.ceil(new Date()/3600000);
+		</script>
+		<!-- Baidu Button END -->
+  </body>
+</html>

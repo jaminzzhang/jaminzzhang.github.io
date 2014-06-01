@@ -15,7 +15,7 @@ title: UITableView 快速滑动和简化控制器 ——《iOS 6编程实战》�
 
 可以使用Instruments中的Core Animation来比较有半透明混合图层和没有半透明混合图层的TableView滑动的帧数（勾选Color Blended Layers 可以看到标记会红色的半透明图层，如图）。勾选会发现使用drawRect画上去的tableView滚动帧数更大。
 
-![Color Blended Layers 展示的图片]({% asset_path images/2013-03-31-Should-Use-IB/iphone_render.png %})
+![Color Blended Layers 展示的图片](/assets/images/2013-03-31-Should-Use-IB/iphone_render.png)
 
 Color Blended Layers 展示的图片
 
