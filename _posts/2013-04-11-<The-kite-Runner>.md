@@ -1,5 +1,5 @@
 ---
-layout: default
+layout: post
 title: 为你，千千万万遍——《追风筝的人(The Kite Runner)》
 ---
 

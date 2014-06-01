@@ -1,5 +1,5 @@
 ---
-layout: default
+layout: post
 title: 属性——《iOS 6编程实战》读书笔记(2)
 ---
 

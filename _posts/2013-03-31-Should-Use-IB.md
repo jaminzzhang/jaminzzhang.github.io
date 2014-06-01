@@ -1,5 +1,5 @@
 ---
-layout: default
+layout: post
 title: UITableView 快速滑动和简化控制器 ——《iOS 6编程实战》读书笔记(3)
 ---
 

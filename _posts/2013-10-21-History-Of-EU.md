@@ -1,5 +1,5 @@
 ---
-layout: default
+layout: post
 title: 《你一定爱读的极简欧洲史》
 ---
 

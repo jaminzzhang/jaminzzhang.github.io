@@ -1,5 +1,5 @@
 ---
-layout: default
+layout: post
 title: 技术宅，改变世界！
 ---
 

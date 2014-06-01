@@ -1,5 +1,5 @@
 ---
-layout: default
+layout: post
 title: 人生而平等
 ---
 
