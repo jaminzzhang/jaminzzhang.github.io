@@ -3,7 +3,6 @@ layout: default
 title: Hello, Once Note!
 ---
 
-<h2>{{ page.title}}</h2>
 
 <p>终于把自己的个人网站建立起来了，历时一个月，非常感谢这过程中<a href="http://www.poemcode.net/" target="_blank">Harve</a>，<a href="http://blankyao.com/" target="_blank">Blank</a>和Rcio的帮助，没有你们的督促和指导，这博客不会那么容易那么快就建起来。</p>
 
@@ -11,7 +10,7 @@ title: Hello, Once Note!
 
 <p>Once Note! 这个名称其实很偶然，我原本想买flying dog或者是flying puppy（像条狗在飞）的域名的，买过域名的都知道，不是你想有什么域名就会有什么域名的，所以我断断续续找了两个星期，终于在一大堆域名中挑到了这个：oncenote.com。Once Note, Remember Forever! once有一次、一旦和曾经的意思，自觉地很有深意，但中文翻译又不知道如何去翻译。那就继续用英文吧。</p>
 
-<p>既然买到了个自觉地不错的域名，就准备在上面做一些事，具体应该做什么呢？还在想！先来个<a title="2013，年度计划" href="http://www.oncenote.com/?p=30">年度计划</a>！</p>
+<p>既然买到了个自觉地不错的域名，就准备在上面做一些事，具体应该做什么呢？还在想！先来个<a title="2013，年度计划" href="./2013-03-10-2Plan2013">年度计划</a>！</p>
 
 <p>Once Note, Once More!</p>
 <p>Once Note, 不只是一次！</p>

@@ -3,8 +3,6 @@ layout: default
 title: 纪念 For Blankyao
 ---
 
-<h2>{{ page.title}}</h2>
-
 <p>今天，雷声轰轰，细雨绵绵，Blank办完了离职手续。2013年3月28日下午16时24分，一众朋友的集体拥簇欢送下，他搭上13楼的电梯，通往他新的路途。
 
 &nbsp;

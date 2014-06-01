@@ -3,8 +3,6 @@ layout: default
 title: 谈谈iPhone和Android
 ---
 
-<h2>{{ page.title}}</h2>
-
 <p>在合肥呆了一年，在深圳又一年，iPhone的合约已经到期，号码还是合肥的号，想着不会再回到合肥了，决定换个号码。选择，继续用iPhone，还是尝试Android？
 
 &nbsp;

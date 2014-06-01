@@ -3,9 +3,6 @@ layout: default
 title: UITableView 快速滑动和简化控制器 ——《iOS 6编程实战》读书笔记(3)
 ---
 
-<h2>{{ page.title}}</h2>
-
-
 
 ***
 ### 1、提高UITableView的滚动速度

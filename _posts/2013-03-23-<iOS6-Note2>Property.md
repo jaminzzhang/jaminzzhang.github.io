@@ -3,7 +3,6 @@ layout: default
 title: 属性——《iOS 6编程实战》读书笔记(2)
 ---
 
-<h2>{{ page.title}}</h2>
 <h2>1、属性修饰关键字：</h2>
 <p>
 <ol>

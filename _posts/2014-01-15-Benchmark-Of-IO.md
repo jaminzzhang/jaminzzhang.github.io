@@ -3,8 +3,6 @@ layout: default
 title: iOS文件操作(IO)的Benchmark
 ---
 
-<h2>{{ page.title}}</h2>
-
 一直想看看iOS的IO性能到底怎么样，所以就有了这次的文件操作的benchmark，让我们看看各种文件操作的效率。  
 测试工具：Xcode 5.0.2 (5A3005) XCTest  
 测试设备：iPod 5 32G  
@@ -232,7 +230,8 @@ Seek文件是一个非常高效的操作，做一次seek操作，相当于遍历
 
 PS：很多IO操作的API中，都提供了path(NSString)和url(NSURL)两种参数方式，我们一直习惯使用path的方式，但官方文档提供的指导是推荐使用NSURL：
 
->引自Apple 文档：https://developer.apple.com/library/ios/documentation/FileManagement/Conceptual/FileSystemProgrammingGuide/PerformanceTips/PerformanceTips.html
+>引自Apple 文档：[https://developer.apple.com/library/ios/documentation/FileManagement/Conceptual/FileSystemProgrammingGuide/PerformanceTips/PerformanceTips.html](https://developer.apple.com/library/ios/documentation/FileManagement/Conceptual/FileSystemProgrammingGuide/PerformanceTips/PerformanceTips.html)
+
 When deciding which routines to call, choose ones that let you specify paths using NSURL objects over those that specify paths using strings. Most of the URL-based routines were introduced in OS X 10.6 and later and were designed from the beginning to take advantage of technologies like Grand Central Dispatch. This gives your code an immediate advantage on multicore computers while not requiring you to do much work.
 Reuse path objects. If you take the time to create an NSURL for a file, reuse that object as much as you can rather than create it each time you need it. Locating files and building URLs or pathname information takes time and can be expensive. Reusing the objects created from those operations saves time and minimizes your app’s interactions with the file system.
 

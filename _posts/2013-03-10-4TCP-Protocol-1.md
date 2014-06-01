@@ -3,7 +3,6 @@ layout: default
 title: 人生而平等
 ---
 
-<h2>{{ page.title}}</h2>
 
 <p>1、子网寻址
 

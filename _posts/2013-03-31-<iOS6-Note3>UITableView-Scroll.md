@@ -3,8 +3,6 @@ layout: default
 title: 是否使用Interface Builder
 ---
 
-<h2>{{ page.title}}</h2>
-
 <p>在《iOS6 编程实战》，“第6章 熟练使用表视图” 一章中对是否使用Interface Builder做了讨论(p76)
 
 首先要确认的概念是：IB不是一个代码生成器，而是能将视图生成为基于XML格式归档文件的编辑器。大部分情况，nib文件不会比等效编码生成的UI性能更低。使用IB的优点：
