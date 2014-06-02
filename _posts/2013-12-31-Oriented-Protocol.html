@@ -3,9 +3,9 @@ layout: post
 title: 面向接口编程之提炼接口（Objective-C ）
 ---
 
-<span>一般，我们所理解的面向接口编程，是为了规范接口，在编码前先写好不同模块间的接口，便于不同模块间的合作。但其实这只是接口的一部分作用，本文所要描述的是，是另外一种面向接口的思想：提炼接口（Extract Interface 引自《重构 改善既有代码的设计》P341）。</span>
+<p>一般，我们所理解的面向接口编程，是为了规范接口，在编码前先写好不同模块间的接口，便于不同模块间的合作。但其实这只是接口的一部分作用，本文所要描述的是，是另外一种面向接口的思想：提炼接口（Extract Interface 引自《重构 改善既有代码的设计》P341）。</p>
 
-<span>Objective-C是一个单继承(single inheritance)的面向对象语言，这里的单继承指的是类(Interface)的单继承，一个类只能且必须由一个父类所派生，所有的类都是从NSObject派生的。相对于类而言，接口(protocol)却给了我们更多的自由，接口可以继承自多个接口，可以完全不继承自任何接口。 对于Objective-C，java和C#这种类单继承的面向对象高级语言来说，类好比就是人类，一个个体人只能由一对父母生育；而接口就像身份，人在不同的场合总有不同的身份。一名屌丝码农，可能是一个女孩多情浪漫的男朋友，也可能是一个男孩一起LOL的好基友。不同的身份适应不同的场合，假如刚才的身份调换，那…</span>
+<p>Objective-C是一个单继承(single inheritance)的面向对象语言，这里的单继承指的是类(Interface)的单继承，一个类只能且必须由一个父类所派生，所有的类都是从NSObject派生的。相对于类而言，接口(protocol)却给了我们更多的自由，接口可以继承自多个接口，可以完全不继承自任何接口。 对于Objective-C，java和C#这种类单继承的面向对象高级语言来说，类好比就是人类，一个个体人只能由一对父母生育；而接口就像身份，人在不同的场合总有不同的身份。一名屌丝码农，可能是一个女孩多情浪漫的男朋友，也可能是一个男孩一起LOL的好基友。不同的身份适应不同的场合，假如刚才的身份调换，那…</p>
 <div class="km_insert_code">
 <pre><code>@<span class="class"><span class="keyword">protocol</span> <span class="id">Protocol1</span></span>
 
@@ -32,9 +32,10 @@ title: 面向接口编程之提炼接口（Objective-C ）
 </div>
 &nbsp;
 
-<span>因此，本文所讲的提炼接口，即规范在不同场合下的不同身份特征接口，由类去实现这些接口来适应不同的场合。</span>
-
-<span>下面，以我们最近项目遇到的问题来讲述接口在我们ON项目中的运用。该项目中需要实现一个展示文件列表，文件下载、展示、保存、删除等一系列操作的功能，这是个非常常见的功能，如微博，信息等都有类似展示列表，列表条目下载、展示、保存和删除等。功能So Easy，时间紧迫，我们直接得出V1.0的版本：</span>
+<p>因此，本文所讲的提炼接口，即规范在不同场合下的不同身份特征接口，由类去实现这些接口来适应不同的场合。</p>
+<br>
+<p>下面，以我们最近项目遇到的问题来讲述接口在我们ON项目中的运用。该项目中需要实现一个展示文件列表，文件下载、展示、保存、删除等一系列操作的功能，这是个非常常见的功能，如微博，信息等都有类似展示列表，列表条目下载、展示、保存和删除等。功能So Easy，时间紧迫，我们直接得出V1.0的版本：</p>
+<br>
 <h3>1. V1.0版本</h3>
 <p style="text-align: center;"><a href="/assets/images/2013-12-31-Oriented-Protocol/1.png"><img class="aligncenter size-medium wp-image-317" alt="1" src="/assets/images/2013-12-31-Oriented-Protocol/1.png" width="300" height="216" /></a></p>
 <p style="text-align: center;"><em>（架构示意图1）</em></p>
@@ -91,33 +92,36 @@ title: 面向接口编程之提炼接口（Objective-C ）
 
 @<span class="keyword">end</span></code></pre>
 </div>
-<span>功能简单，结构清晰，编码一气呵成，几乎没有费什么力气就完成了该功能。</span>
+<p>功能简单，结构清晰，编码一气呵成，几乎没有费什么力气就完成了该功能。</p>
+<br>
 <h3>2. V1.1版本</h3>
-<span>假如你也觉得这样就完了，那你也像当年的我一样——Too young too simple！虐你千万遍的需求变更：接入其他服务A的文件，功能类似，展示有细微区别。这难不倒撸主，解决的方案是：因为服务A的文件系统的信息与ONFile基本一致，所以维持当前的结构不变，引入的服务A的文件继承自类ONFile，派生出子类ONAFile，这个时候，架构示意图看起来如下：</span>
+<p>假如你也觉得这样就完了，那你也像当年的我一样——Too young too simple！虐你千万遍的需求变更：接入其他服务A的文件，功能类似，展示有细微区别。这难不倒撸主，解决的方案是：因为服务A的文件系统的信息与ONFile基本一致，所以维持当前的结构不变，引入的服务A的文件继承自类ONFile，派生出子类ONAFile，这个时候，架构示意图看起来如下：</p>
 
 <a href="/assets/images/2013-12-31-Oriented-Protocol/2.png"><img class="aligncenter size-medium wp-image-318" alt="2" src="/assets/images/2013-12-31-Oriented-Protocol/2.png" width="300" height="215" /></a>
 <p style="text-align: center;"><em style="line-height: 2em;">（架构示意图2）</em></p>
-<span>代码中假如了少量的判断分支语句，看起来有点难看，但尚可接受。</span>
+<p>代码中假如了少量的判断分支语句，看起来有点难看，但尚可接受。</p>
+<br>
 <h3>3. V1.2版本 ~ V1.X版本</h3>
-<span>很明显，当有了第一次需求变更，我们很快会变淹没在需求的海洋里。</span>
-<span>V1.2，为了差异化，各种类型的文件展示方式不一样；</span>
-<span>V1.3，接入服务B的文件系统（ONBFile），并不如服务A幸运，服务B的文件信息与ONFile的信息差别较大，操作和列表展示也不太一致，但文件内容展示是一致的；</span>
-<span>V1.4，支持其他App OpenIn文件到我们的App</span>
-<span>…</span>
-<span>很熟悉的场面是不是？几乎所有的程序员都会遇到过当前的系统架构完全无法满足需求的野蛮扩充，所以，我们需要接口。</span>
+<p>很明显，当有了第一次需求变更，我们很快会变淹没在需求的海洋里。</p>
+<br>V1.2，为了差异化，各种类型的文件展示方式不一样；
+<br>V1.3，接入服务B的文件系统（ONBFile），并不如服务A幸运，服务B的文件信息与ONFile的信息差别较大，操作和列表展示也不太一致，但文件内容展示是一致的；
+<br>V1.4，支持其他App OpenIn文件到我们的App
+<br>…
+<br>很熟悉的场面是不是？几乎所有的程序员都会遇到过当前的系统架构完全无法满足需求的野蛮扩充，所以，我们需要接口。</p>
+<br>
 <h3>4. 高可扩展性的V2.0版本</h3>
-<span>当你发现你所要支持的信息展示之复杂，已经超出了你当初设计可承载的时候，你是会继续沿用就有的设计，加入更多的判断分支处理相同功能中的部分差异，复制粘贴更多的相同的处理代码来处理差异信息中的部分相同功能？亦或者是，重构你的设计，让之前未考虑清除的可扩展性回到你的设计中。</span>
+<p>当你发现你所要支持的信息展示之复杂，已经超出了你当初设计可承载的时候，你是会继续沿用就有的设计，加入更多的判断分支处理相同功能中的部分差异，复制粘贴更多的相同的处理代码来处理差异信息中的部分相同功能？亦或者是，重构你的设计，让之前未考虑清除的可扩展性回到你的设计中。</p>
 
-<span>所以，我们开始了接口编程：</span>
+<p>所以，我们开始了接口编程：</p>
 <p style="text-align: center;"><a href="/assets/images/2013-12-31-Oriented-Protocol/3.png"><img class="aligncenter size-medium wp-image-319" alt="3" src="/assets/images/2013-12-31-Oriented-Protocol/3.png" width="258" height="300" /></a></p>
 <p style="text-align: center;"><em>（架构示意图3）</em></p>
 <span>接口化之后，有以下几个优点：</span>
-<span>1）<b>可扩展性</b>：可扩展性主要体现在以下两个方面：</span>
-<span>     a) 从架构图来看，貌似类增加了，但实际上增强了各模块的解耦性，能够非常方便地增减模块，使用接口来替代糟糕的判断语句；</span>
-<span>         如现在需要接入服务C的文件系统，而信息展示上与ONBFile一致，那么只需要以下三步：</span>
-<span>          I.   在数据层创建ONCFileInfo，ONCFile实现&lt;ONFileInfo&gt;的接口；</span>
+<p>1）<b>可扩展性</b>：可扩展性主要体现在以下两个方面：</p>
+<p>   a) 从架构图来看，貌似类增加了，但实际上增强了各模块的解耦性，能够非常方便地增减模块，使用接口来替代糟糕的判断语句；</p>
+<p> 如现在需要接入服务C的文件系统，而信息展示上与ONBFile一致，那么只需要以下三步：</p>
+<p>     I.   在数据层创建ONCFileInfo，ONCFile实现&lt;ONFileInfo&gt;的接口；</p>
 
-<span>逻辑层数据接口：</span>
+<p>逻辑层数据接口：</P>
 <div class="km_insert_code">
 <pre><code>@<span class="class"><span class="keyword">protocol</span> <span class="id">ONFileInfo</span> &lt;<span class="id">NSObject</span>&gt;</span>
 
@@ -140,11 +144,11 @@ title: 面向接口编程之提炼接口（Objective-C ）
 @<span class="keyword">end</span>
 </code></pre>
 </div>
-<em id="__mceDel">          </em> II.  在逻辑层创建ONCFileManager，ONCFileManager实现ONCFileInfo支持的一系列操作，并在ONAllFileManager分发ONCFile的操作到ONCFileManager;（如架构图所示）
+<em id="__mceDel">          </em>
+<p>     II.  在逻辑层创建ONCFileManager，ONCFileManager实现ONCFileInfo支持的一系列操作，并在ONAllFileManager分发ONCFile的操作到ONCFileManager;（如架构图所示）</p>
+<p>     III. 在接口层，创建类ONUICFile，实现ONUIBFile的接口，即可直接复用ONUIBFile的IU组件进行展示。</p>
 
-III. 在接口层，创建类ONUICFile，实现ONUIBFile的接口，即可直接复用ONUIBFile的IU组件进行展示。
-
-UI层的数据接口
+<p>UI层的数据接口</p>
 <div class="km_insert_code">
 <pre><code>@<span class="class"><span class="keyword">protocol</span> <span class="id">ONUIFile</span> &lt;<span class="id">NSObject</span>&gt;</span>
 
@@ -184,13 +188,13 @@ UI层的数据接口
     <span class="keyword">self</span><span class="variable">.detailLabel</span><span class="variable">.text</span> = [file formatedTimeStr];
 }</code></pre>
 </div>
-<span>     b) 而且由于接口的多继承特性，能够很好的实现差异化的需求。</span>
+<p>   b) 而且由于接口的多继承特性，能够很好的实现差异化的需求。</p>
 <span>     如在某个整体的列表中，ONFile、ONAFile、ONBFile要统一样式展示，而在服务B的文件系统时，ONBFile需要特殊展示，使用接口，各个展示模块只需要制定自己的接口，由需要展示的数据来实现这些接口即可。</span>
 
-<span>2）<b>可复用性</b>：但实现完全不依赖于某一个类，只是依赖于接口，将接口组合复用成本明显比将类组合复用要低很多。</span>
+<p>2）<b>可复用性</b>：但实现完全不依赖于某一个类，只是依赖于接口，将接口组合复用成本明显比将类组合复用要低很多。</p>
 
-<span>3）<b>保证数据安全</b>：之前的实现是逻辑控制层、数据层和视图层都用同一个数据，数据很容易在某个环节被修改，就会导致数据被污染；接口化之后，UI层只获取到接口，可再接口这一层保证数据安全。</span>
+<p>3）<b>保证数据安全</b>：之前的实现是逻辑控制层、数据层和视图层都用同一个数据，数据很容易在某个环节被修改，就会导致数据被污染；接口化之后，UI层只获取到接口，可再接口这一层保证数据安全。</p>
 
-<span>当然，接口并非是万能的，接口非常适用于某个类或者实体需要在不同的环境中扮演不同的身份或角色，特别是对于Objective-C这中类只能单继承的语言。本文中所要阐述的面向接口的思想，不只是针对Objective-C这一种语言，其思想在各种语言中都是共通的。</span>
+<p>当然，接口并非是万能的，接口非常适用于某个类或者实体需要在不同的环境中扮演不同的身份或角色，特别是对于Objective-C这中类只能单继承的语言。本文中所要阐述的面向接口的思想，不只是针对Objective-C这一种语言，其思想在各种语言中都是共通的。</p>
 
 <p>{{ page.date | date_to_string}}</p>

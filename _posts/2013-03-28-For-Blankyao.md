@@ -25,6 +25,6 @@ title: 纪念 For Blankyao
 
 &nbsp;
 
-Blankyao博客：<a title="http://blog.blankyao.com" href="http://blog.blankyao.com" target="_blank">http://blog.blankyao.com</a>]]>/p>
+Blankyao博客：<a title="http://blog.blankyao.com" href="http://blog.blankyao.com" target="_blank">http://blog.blankyao.com</a>
 
 <p>{{ page.date | date_to_string}}</p>
