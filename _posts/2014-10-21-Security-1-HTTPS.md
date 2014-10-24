@@ -6,17 +6,18 @@ title: iOS安全系列一：HTTPS
 
 如何打造一个安全的App？这是每一个移动开发者必须面对的问题。在移动App开发领域，开发工程师对于安全方面的考虑还是比较欠缺，而由于iOS平台的封闭性，遭遇到的安全问题相比于Android来说要少得多，这就导致了许多iOS开发人员对于安全性方面并没有花太多的精力。对于一个合格的软件开发者来说，安全知识是必备知识之一。
 
-引读[互联网全站HTTPS的时代已经到来](http://get.jobdeer.com/1607.get)
+引读：[互联网全站HTTPS的时代已经到来](http://get.jobdeer.com/1607.get)
 
 
 现在完全本地的App已经变得越来越少，甚至已成凤毛菱角，就算是App的业务员不需要进行网络请求，但App里面加入的统计SDK一样会进行网络请求。而我们很多的网络请求还是通过HTTP来进行的。我们知道HTTP是明文的，在网络传输的过程中，就是相当于裸奔！而HTTPS就是HTTP的最佳替代品。
 
-#[HTTPS](http://en.wikipedia.org/wiki/HTTP_Secure)
+<br/><br/>
+#1.[HTTPS](http://en.wikipedia.org/wiki/HTTP_Secure)
 
 其实HTTPS从最终的数据解析的角度，与HTTP没有任何的区别，HTTPS就是将HTTP协议数据包放到SSL/TSL层加密后，在TCP/IP层组成IP数据报去传输，以此保证传输数据的安全；而对于接收端，在SSL/TSL将接收的数据包解密之后，将数据传给HTTP协议层，就是普通的HTTP数据。HTTP和SSL/TSL都处于OSI模型的应用层。从HTTP切换到HTTPS是一个非常简单的过程，在做具体的切换操作之前，我们需要了解几个概念：
 
-
-##SSL/TSL
+<br/><br/>
+##[SSL/TSL](http://en.wikipedia.org/wiki/Transport_Layer_Security)
 
 关于SSL/TSL，阮一峰的两篇博客文章做了很好的介绍：
 
@@ -37,7 +38,7 @@ title: iOS安全系列一：HTTPS
 这是由于SSL/TLS设计，就假设服务器不相信所有的客户端都能够提供完全随机数，假如某个客户端提供的随机数不随机的话，就大大增加了“对话密钥”被破解的风险，所以由三组随机数组成最后的随机数，保证了随机数的随机性，以此来保证每次生成的“对话密钥”安全性。
 
 
-
+<br/><br/>
 ##[数字证书](http://en.wikipedia.org/wiki/Public_key_certificate)
 
 数字证书是一个电子文档，其中包含了持有者的信息、公钥以及证明该证书有效的数字签名。而数字证书以及相关的公钥管理和验证等技术组成了[PKI](http://en.wikipedia.org/wiki/Public-key_infrastructure)（公钥基础设施）规范体系。一般来说，数字证书是由数字证书认证机构(Certificate authority，即CA)来负责签发和管理，并承担PKI体系中公钥合法性的检验责任；数字证书的类型有很多，而HTTPS使用的是SSL证书。
@@ -46,29 +47,30 @@ title: iOS安全系列一：HTTPS
 在回答这个问题前，我们需要先了解CA的组织结构。首先，CA组织结构中，最顶层的就是根CA，根CA下可以授权给多个二级CA，而二级CA又可以授权多个三级CA，所以CA的组织结构是一个树结构。对于SSL证书市场来说，主要被Symantec(旗下有VeriSign和GeoTrust)、Comodo SSL、Go Daddy 和 GlobalSign 瓜分。
 了解了CA的组织结构后，来看看数字证书的签发流程：
 
-
+<br/>
 ![数字证书的签发流程](/assets/images/2014-10-21/CA.png)
-
+<br/>
 
 数字证书的签发机构CA，在接收到申请者的资料后进行核对并确定信息的真实有效，然后就会制作一份符合[X.509](http://tools.ietf.org/html/rfc5280)标准的文件。证书中的证书内容包括了持有者信息和公钥等都是由申请者提供的，而数字签名则是CA机构对证书内容进行hash加密后等到的，而这个数字签名就是我们验证证书是否是有可信CA签发的数据。
 
-
+<br/>
 ![数字证书的验证流程](/assets/images/2014-10-21/CerValiate.png)
-
+<br/>
 
 接收端接到一份数字证书Cer1后，对证书的内容做Hash等到H1；然后在签发该证书的机构CA1的数字证书中找到公钥，对证书上数字签名进行解密，得到证书Cer1签名的Hash摘要H2；对比H1和H2，假如相等，则表示证书没有被篡改。但这个时候还是不知道CA是否是合法的，我们看到上图中有CA机构的数字证书，这个证书是公开的，所有人都可以获取到。而这个证书中的数字签名是上一级生成的，所以可以这样一直递归验证下去，直到根CA。根CA是自验证的，即他的数字签名是由自己的私钥来生成的。合法的根CA会被浏览器和操作系统加入到权威信任CA列表中，这样就完成了最终的验证。所以，一定要保护好自己环境（浏览器/操作系统）中根CA信任列表，信任了根CA就表示信任所有根CA下所有子级CA所签发的证书，不要随便添加根CA证书。
 
 
 了解了上面两个概念之后，对HTTPS就有了个初步的了解，下面我们看如何在iOS上实现对HTTPS的支持。
 
-#HTTPS的支持
+  
+<br/><br/>
+#2.实现支持HTTPS  
 
-引读：
 
 首先，需要明确你使用HTTP/HTTPS的用途，因为OSX和iOS平台提供了多种API，来支持不同的用途，官方文档[《Making HTTP and HTTPS Requests》](https://developer.apple.com/library/ios/documentation/NetworkingInternetWeb/Conceptual/NetworkingOverview/WorkingWithHTTPAndHTTPSRequests/WorkingWithHTTPAndHTTPSRequests.html)有详细的说明，而文档[《HTTPS Server Trust Evaluation》](https://developer.apple.com/library/ios/technotes/tn2232/_index.html)则详细讲解了HTTPS验证相关知识，这里就不多说了。本文主要讲解我们最常用的NSURLConnection支持HTTPS的实现（NSURLSession的实现方法类似，只是要求授权证明的回调不一样而已），以及怎么样使用AFNetworking这个非常流行的第三方库来支持HTTPS。本文假设你对HTTP以及NSURLConnection的接口有了足够的了解。
 
-
-##验证证书的API
+<br/>
+##验证证书的API   
 
 相关的Api在[Security Framework](https://developer.apple.com/library/ios/documentation/Security/Reference/SecurityFrameworkReference/_index.html)中，验证流程如下：
 
@@ -89,17 +91,17 @@ iOS授权验证的API和流程大概了解了，下面，我们看看在NSURLCon
 
   
 
+<br/>
+##使用NSURLConnection支持HTTPS的实现 
 
-##使用NSURLConnection支持HTTPS的实现
 
+<br/>
 
- 
 ```
 // Now start the connection
 NSURL * httpsURL = [NSURL URLWithString:@"https://www.google.com"];
 self.connection = [NSURLConnection connectionWithRequest:[NSURLRequest requestWithURL:httpsURL] delegate:self];
-    
-    
+
     
 //回调
 - (void)connection:(NSURLConnection *)connection willSendRequestForAuthenticationChallenge:(NSURLAuthenticationChallenge *)challenge {
@@ -124,13 +126,14 @@ self.connection = [NSURLConnection connectionWithRequest:[NSURLRequest requestWi
     	
   }
 }
+
 ```
-
-
+<br/>
 
  
 上面是代码是通过系统默认验证流程来验证请求的。假如我们是自建证书的呢？这样Trust Object里面服务器的证书因为不是可信任的CA签发的，所以直接使用`SecTrustEvaluate`进行验证是不会成功。验证自建证书，需要先在本地导入证书，设置成需要验证的Anchor Certificate(就是根证书)，再调用`SecTrustEvaluate`来验证。代码如下
 
+<br/>
 
 ```
 //先导入证书
@@ -144,10 +147,10 @@ self.trustedCertificates = @[CFBridgingRelease(certificate)];
  	//1)获取trust object
 	SecTrustRef trust = challenge.protectionSpace.serverTrust;
 	SecTrustResultType result;
-	
+
 	//注意：这里将之前导入的证书设置成下面验证的Trust Object的anchor certificate
   	SecTrustSetAnchorCertificates(trust, (__bridge CFArrayRef)self.trustedCertificates);
-	
+
 	//2)SecTrustEvaluate会查找前面SecTrustSetAnchorCertificates设置的证书或者系统默认提供的证书，对trust进行验证
 	OSStatus status = SecTrustEvaluate(trust, &result);
 	if (status == errSecSuccess &&
@@ -165,20 +168,23 @@ self.trustedCertificates = @[CFBridgingRelease(certificate)];
     	
   }
 }
+
 ```
+<br/>
 
 更多的验证方法，请查看官方文档[《HTTPS Server Trust Evaluation》](https://developer.apple.com/library/ios/technotes/tn2232/_index.html)  
 
 
-
+<br/>
 ##使用AFNetworking来支持HTTPS
 
 [AFNetworking](https://github.com/AFNetworking/AFNetworking)是iOS/OSX开发最流行的第三方开源库之一，其作者是非常著名的iOS/OSX开发者[Mattt Thompson](https://github.com/mattt)，其博客[NSHipster](http://nshipster.com/)也是iOS/OSX开发者学习和开阔技术视野的好地方。AFNetworking已经将上面的逻辑代码封装好，甚至更完善，在AFSecurityPolicy文件中，有兴趣可以阅读这个模块的代码；
 
 AFNetworking上配置对HTTPS的支持非常简单：
 
-```
+<br/>
 
+```
 NSURL * url = [NSURL URLWithString:@"https://www.google.com"];
 AFHTTPRequestOperationManager * requestOperationManager = [[AFHTTPRequestOperationManager alloc] initWithBaseURL:url];
 dispatch_queue_t requestQueue = dispatch_create_serial_queue_for_name("kRequestCompletionQueue");
@@ -208,27 +214,24 @@ requestOperationManager.securityPolicy = securityPolicy;
 
 
 ```
+<br/>
+
 
 这就是AFNetworking的支持HTTPS的主要配置说明，AFHTTPSessionManager与之基本一致，就不重复了。
 
 
 
 
+<br/><br/>
+#3.总结
 
-#总结
-
-虽然HTTPS相比于HTTP来说，会有一定的性能上的劣势，但对于网络飞速发展，移动设备的性能成倍增长的今天，安全才是我们应该更应该去考虑的。全网HTTPS并不是那么遥远。  
+虽然HTTPS相比于HTTP来说，会有一定的性能上的劣势，但对于网络飞速发展，移动设备的性能成倍增长的今天，安全才是我们更应该去考虑的。全网HTTPS并不是那么遥远。  
 
 下一篇准备讲内存数据安全和持久化数据的安全，敬请期待。  
 
   
-  
-  
-  
 
-
-
-
+<br/><br/>
 ----
 转载请保留[Jaminzzhang](http://oncenote.com/)署名
 
