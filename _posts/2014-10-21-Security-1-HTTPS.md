@@ -1,18 +1,23 @@
 ---
 layout: post
-title: iOS安全系列一：HTTPS
+title: iOS安全系列之一：HTTPS
 ---
 
 
-如何打造一个安全的App？这是每一个移动开发者必须面对的问题。在移动App开发领域，开发工程师对于安全方面的考虑还是比较欠缺，而由于iOS平台的封闭性，遭遇到的安全问题相比于Android来说要少得多，这就导致了许多iOS开发人员对于安全性方面并没有花太多的精力。对于一个合格的软件开发者来说，安全知识是必备知识之一。
+如何打造一个安全的App？这是每一个移动开发者必须面对的问题。在移动App开发领域，开发工程师对于安全方面的考虑普遍比较欠缺，而由于iOS平台的封闭性，遭遇到的安全问题相比于Android来说要少得多，这就导致了许多iOS开发人员对于安全性方面没有太多的深入，但对于一个合格的软件开发者来说，安全知识是必备知识之一。
+
+对于未越狱的iOS设备来说，由于强大的沙箱和授权机制，以及Apple自己掌控的App Store， 基本上杜绝了恶意软件的入侵。但除系统安全之外，我们还是面临很多的安全问题：网络安全、数据安全等，每一项涉及也非常广，安全是非常大的课题，本人并非专业的安全专家，只是从开发者的角度，分析我们常遇到的各项安全问题，并提出通常的解决方法，与各位交流。 
+
+每一个软件工程师都有义务保护用户数据的隐私和安全。
+
+<br/><br/>
+
+首先是网络安全，OSI模型各层都会面临相应的网络安全问题，涉及宽广，而网络安全也是安全领域发展最为繁荣的领域。本文我们只是从移动应用开发角度，以尽量简单的方式，讲解HTTPS核心概念知识，以及在iOS平台上的实现。建议现在还在使用HTTP的应用都升级到HTTPS。
 
 引读：[互联网全站HTTPS的时代已经到来](http://get.jobdeer.com/1607.get)
 
-
-现在完全本地的App已经变得越来越少，甚至已成凤毛菱角，就算是App的业务员不需要进行网络请求，但App里面加入的统计SDK一样会进行网络请求。而我们很多的网络请求还是通过HTTP来进行的。我们知道HTTP是明文的，在网络传输的过程中，就是相当于裸奔！而HTTPS就是HTTP的最佳替代品。
-
-<br/><br/>
-#1.[HTTPS](http://en.wikipedia.org/wiki/HTTP_Secure)
+<br/>
+#1. [HTTPS](http://en.wikipedia.org/wiki/HTTP_Secure)
 
 其实HTTPS从最终的数据解析的角度，与HTTP没有任何的区别，HTTPS就是将HTTP协议数据包放到SSL/TSL层加密后，在TCP/IP层组成IP数据报去传输，以此保证传输数据的安全；而对于接收端，在SSL/TSL将接收的数据包解密之后，将数据传给HTTP协议层，就是普通的HTTP数据。HTTP和SSL/TSL都处于OSI模型的应用层。从HTTP切换到HTTPS是一个非常简单的过程，在做具体的切换操作之前，我们需要了解几个概念：
 
@@ -64,7 +69,7 @@ title: iOS安全系列一：HTTPS
 
   
 <br/><br/>
-#2.实现支持HTTPS  
+#2. 实现支持HTTPS  
 
 
 首先，需要明确你使用HTTP/HTTPS的用途，因为OSX和iOS平台提供了多种API，来支持不同的用途，官方文档[《Making HTTP and HTTPS Requests》](https://developer.apple.com/library/ios/documentation/NetworkingInternetWeb/Conceptual/NetworkingOverview/WorkingWithHTTPAndHTTPSRequests/WorkingWithHTTPAndHTTPSRequests.html)有详细的说明，而文档[《HTTPS Server Trust Evaluation》](https://developer.apple.com/library/ios/technotes/tn2232/_index.html)则详细讲解了HTTPS验证相关知识，这里就不多说了。本文主要讲解我们最常用的NSURLConnection支持HTTPS的实现（NSURLSession的实现方法类似，只是要求授权证明的回调不一样而已），以及怎么样使用AFNetworking这个非常流行的第三方库来支持HTTPS。本文假设你对HTTP以及NSURLConnection的接口有了足够的了解。
@@ -131,7 +136,7 @@ self.connection = [NSURLConnection connectionWithRequest:[NSURLRequest requestWi
 <br/>
 
  
-上面是代码是通过系统默认验证流程来验证请求的。假如我们是自建证书的呢？这样Trust Object里面服务器的证书因为不是可信任的CA签发的，所以直接使用`SecTrustEvaluate`进行验证是不会成功。验证自建证书，需要先在本地导入证书，设置成需要验证的Anchor Certificate(就是根证书)，再调用`SecTrustEvaluate`来验证。代码如下
+上面是代码是通过系统默认验证流程来验证证书的。假如我们是自建证书的呢？这样Trust Object里面服务器的证书因为不是可信任的CA签发的，所以直接使用`SecTrustEvaluate`进行验证是不会成功。又或者，即使服务器返回的证书是信任CA签发的，又如何确定这证书就是我们想要的特定证书？这就需要先在本地导入证书，设置成需要验证的Anchor Certificate(就是根证书)，再调用`SecTrustEvaluate`来验证。代码如下
 
 <br/>
 
@@ -172,7 +177,7 @@ self.trustedCertificates = @[CFBridgingRelease(certificate)];
 ```
 <br/>
 
-更多的验证方法，请查看官方文档[《HTTPS Server Trust Evaluation》](https://developer.apple.com/library/ios/technotes/tn2232/_index.html)  
+建议采用本地导入证书的方式验证证书，来保证足够的安全性。更多的验证方法，请查看官方文档[《HTTPS Server Trust Evaluation》](https://developer.apple.com/library/ios/technotes/tn2232/_index.html)  
 
 
 <br/>
@@ -223,7 +228,7 @@ requestOperationManager.securityPolicy = securityPolicy;
 
 
 <br/><br/>
-#3.总结
+#3. 总结
 
 虽然HTTPS相比于HTTP来说，会有一定的性能上的劣势，但对于网络飞速发展，移动设备的性能成倍增长的今天，安全才是我们更应该去考虑的。全网HTTPS并不是那么遥远。  
 
@@ -232,6 +237,8 @@ requestOperationManager.securityPolicy = securityPolicy;
   
 
 <br/><br/>
-----
-转载请保留[Jaminzzhang](http://oncenote.com/)署名
+
+---
+
+版权所有转载请保留[Jaminzzhang](http://oncenote.com/)署名
 
