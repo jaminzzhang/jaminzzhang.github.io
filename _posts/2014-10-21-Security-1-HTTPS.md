@@ -240,5 +240,5 @@ requestOperationManager.securityPolicy = securityPolicy;
 
 ---
 
-版权所有转载请保留[Jaminzzhang](http://oncenote.com/)署名
+版权所有，转载请保留[Jaminzzhang](http://oncenote.com/)署名
 
