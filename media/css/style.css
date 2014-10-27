@@ -37,12 +37,12 @@ blockquote p{margin:0;padding:.5em 0;}
 #tag_cloud{margin-bottom: 1em;}
 #tag_cloud a:hover{color:#333333 !important;text-decoration:none;}
 .listing-item,.listing-seperator{list-style-type:none;}
-.listing-item a{
+/*.listing-item a{
 	padding:.2em 1em;
 
-}
+}*/
 
-.listing-item time{color:#999999;}
+.listing-item time{color:#999999;font-size:10px;}
 .listing-seperator{font-weight:bold;}
 .meta{text-align:right;font-size:12px;}
 .pageNav{font-weight:bold;font-size:17px;}
