@@ -13,6 +13,9 @@ title: iOS并发编程（Concurrency Programming）系列之一：Run Loop
 >	4. 锁 (酝酿中)
 
 
+
+
+</br></br>
 #1. 线程？
 
 并发编程，首先不是应该先谈谈线程么？个人不准备详谈线程有以下几个原因：
@@ -24,10 +27,10 @@ title: iOS并发编程（Concurrency Programming）系列之一：Run Loop
 当然，可以看看阮一峰老师的文章[进程与线程的一个简单解释](http://www.ruanyifeng.com/blog/2013/04/processes_and_threads.html)，来形象地重温下线程和进程方面的知识。
 
 
-![进程和线程](/assets/images/2015-03-22/process_thread.jpg)
+![进程和线程](/assets/images/2015-03-22/process_thread.jpg)</br>
 
 
-</br>
+</br></br>
 #2. Run Loop 基本概念
 
 在实际iOS的实际开发中，一般来说，简单线程任务是不建议手动创建一个线程来实现，因为手动创建并管理线程的生命周期还是一个比较麻烦的事，通常会建议使用系统提供的一些异步方法(`performSelectorInBackground: withObject:`等)、Operation Queues或者是Dispatch Queues等。而只有当有持续的异步任务需求的时候，或者是需要在执行线程上异步接收消息回调时，我们才会创建一个独立的生命周期可控的线程，而Run Loop是控制线程生命周期并接收处理事件的机制。
@@ -37,7 +40,7 @@ title: iOS并发编程（Concurrency Programming）系列之一：Run Loop
 `Run loops are part of the fundamental infrastructure associated with threads. A run loop is an event processing loop that you use to schedule work and coordinate the receipt of incoming events. The purpose of a run loop is to keep your thread busy when there is work to do and put your thread to sleep when there is none.`
 
 
-![Run Loop](https://developer.apple.com/library/ios/documentation/Cocoa/Conceptual/Multithreading/Art/runloop.jpg)
+![Run Loop](https://developer.apple.com/library/ios/documentation/Cocoa/Conceptual/Multithreading/Art/runloop.jpg)</br>
 
 
 
@@ -45,16 +48,17 @@ title: iOS并发编程（Concurrency Programming）系列之一：Run Loop
 
 
 
-![流水线](/assets/images/2015-03-22/assembly_line.jpg)
+![流水线](/assets/images/2015-03-22/assembly_line.jpg)</br>
 
 
-Run Loop并非iOS/OSX平台专属的概念，在任何平台的多线程编程中，为控制线程生命周期，接收处理异步消息，都需要类似Run Loop的循环机制来实现：从简单的一个死顺序`do{sleep(1);//执行消息}while(true)`，到高级平台，如Android的Looper，都是类似的机制。
+Run Loop并非iOS/OSX平台专属的概念，在任何平台的多线程编程中，为控制线程生命周期，接收处理异步消息，都需要类似Run Loop的循环机制来实现：从简单的一个无限顺序`do{sleep(1);//执行消息}while(true)`，到高级平台，如Android的Looper，都是类似的机制。
 
 主线程的Run Loop在应用启动的时候就会自动创建，而其他自己创建的线程则需要在该线程下显式地调用`[NSRunLoop currentRunLoop]`，假如该线程还没有线程的话，系统会自动创建一个返回。你不能自己去创建一个Run Loop。需要注意的是Run Loop并非线程安全的，所以需要避免在其他线程上调用当前线程的Run Loop。
 
 
-</br>
+</br></br>
 #3. Run Loop支持的消息事件(Events)
+
 Run Loop支持处理输入源（Input Source）事件和计时器（Timer）事件。其中输入源事件包括：系统的Mach Port事件、以及其他自定义输入事件。其中Mach Port是iOS/OSX系统支持的一种通讯事件；而自定义输入事件则故名思议，是需要你自己根据Run Loop的接口，实现相关的回调，来配置自定义的输入源，让Run Loop能够支持对这写输入源的监听和处理。
 
 Cocoa中已经为开发者实现了一些常用的自定义输入源，如Perform Selector、NSConnection等；
@@ -73,7 +77,7 @@ Cocoa中已经为开发者实现了一些常用的自定义输入源，如Perfor
 }
 ```
 
-
+</br></br>
 #4. Run Loop Modes
 
 官方文档定义：
@@ -113,16 +117,16 @@ Run Loop可以通过`[acceptInputForMode:beforeDate:]`和`[runMode:beforeDate:]`
 
 
 
-</br>
+</br></br>
 #5. Run Loop的应用实践
 
 
 Run Loop主要有以下三个应用场景：
 
 
+</br>
 ##5.1 可维护生命周期的线程
 
-</br>
 该场景较为常见，Run Loop的作用主要是用于维护线程的生命周期，让线程不自动退出，但可以根据需要调用`[thread cancel]`，或者执行完某任务之后，在isFinished返回YES来退出线程。如下代码：
 
 ```
@@ -141,7 +145,6 @@ Run Loop主要有以下三个应用场景：
 </br>
 ##5.2 长驻线程，用于执行一些预期会一直存在的任务
 
-</br>
 如下代码，摘自AFNetworking库，创建一个长驻的线程，该线程的生命周期跟App相同，用于发送请求和接收回调。注意，该线程在启动之后，无法通过调用`[thread cancel]`和`removePort:forMode:`等方式结束：
 
 ```
@@ -156,10 +159,9 @@ Run Loop主要有以下三个应用场景：
 ```
 
 
-
+</br>
 ##5.3 在一定时间内监听某种事件，或执行某种任务的线程
 
-</br>
 如下代码所示，在30分钟内，每隔30s执行`onTimerFired:`。这种场景一般会出现在，如我需要在应用启动之后，在一定时间内持续更新某项数据。
 
 ```
@@ -180,7 +182,7 @@ Run Loop主要有以下三个应用场景：
 
 
 
-
+</br></br>
 #6. 总结
 
 本文从本人的编程实践出发，主要讲解了我们在使用线程时，需要了解的Run Loop相关知识点，以及常用的场景。由于篇幅和个人的知识有限，本文并没有办法覆盖到Run Loop的方方面面，有兴趣的同学可以继续深入研究。
