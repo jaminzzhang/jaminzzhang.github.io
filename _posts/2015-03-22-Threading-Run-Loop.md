@@ -24,7 +24,7 @@ title: iOS并发编程（Concurrency Programming）系列之一：Run Loop
 当然，可以看看阮一峰老师的文章[进程与线程的一个简单解释](http://www.ruanyifeng.com/blog/2013/04/processes_and_threads.html)，来形象地重温下线程和进程方面的知识。
 
 
-![进程和线程](assets/images/2015-03-22/process_thread.jpg)
+![进程和线程](/assets/images/2015-03-22/process_thread.jpg)
 
 
 </br>
@@ -45,7 +45,7 @@ title: iOS并发编程（Concurrency Programming）系列之一：Run Loop
 
 
 
-![流水线](assets/images/2015-03-22/assembly_line.jpg)
+![流水线](/assets/images/2015-03-22/assembly_line.jpg)
 
 
 Run Loop并非iOS/OSX平台专属的概念，在任何平台的多线程编程中，为控制线程生命周期，接收处理异步消息，都需要类似Run Loop的循环机制来实现：从简单的一个死顺序`do{sleep(1);//执行消息}while(true)`，到高级平台，如Android的Looper，都是类似的机制。
