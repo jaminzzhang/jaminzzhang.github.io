@@ -33,7 +33,7 @@ title: iOS并发编程（Concurrency Programming）系列之一：Run Loop
 </br></br>
 #2. Run Loop 基本概念
 
-在实际iOS的实际开发中，一般来说，简单线程任务是不建议手动创建一个线程来实现，因为手动创建并管理线程的生命周期还是一个比较麻烦的事，通常会建议使用系统提供的一些异步方法(`performSelectorInBackground: withObject:`等)、Operation Queues或者是Dispatch Queues等。而只有当有持续的异步任务需求的时候，或者是需要在执行线程上异步接收消息回调时，我们才会创建一个独立的生命周期可控的线程，而Run Loop是控制线程生命周期并接收处理事件的机制。
+在实际iOS的实际开发中，简单线程任务是不建议手动创建一个线程来实现，因为手动创建并管理线程的生命周期比较麻烦，通常会使用系统提供的一些异步方法(`performSelectorInBackground: withObject:`等)、Operation Queues或者是Dispatch Queues等来实现。而只有当有持续的异步任务需求时，我们才会创建一个独立的生命周期可控的线程，而Run Loop就是控制线程生命周期并接收事件进行处理的机制。
 
 以下是Run Loop的官方定义：
 
@@ -44,7 +44,7 @@ title: iOS并发编程（Concurrency Programming）系列之一：Run Loop
 
 
 
-假如进程是一个工厂，线程是一个流水线，那么Run Loop就是这个流水线的主管；当接工厂到商家订单，分配给这个流水线时，Run Loop就启动这个流水线，让流水线动起来，生产产品；而当订单的产品生产完毕时，Run Loop就会暂时关闭这个流水线，节约资源。有Run Loop这个主管接订单看着，流水线才不会被工厂干掉；而工厂转型或者产能升级等原因，不需要这个流水线时，就会辞掉Run Loop这个主管，不再接收任何的订单，即退出线程，把所有的资源释放。
+假设进程是一个工厂，线程是一个流水线，那么Run Loop就是流水线上的主管；当接工厂到商家订单，分配给这个流水线时，Run Loop就启动这个流水线，让流水线动起来，生产产品；而当订单的产品生产完毕时，Run Loop就会暂时停下流水线，节约资源。有Run Loop这个主管分配生产任务，流水线才不会因为无所事事被工厂干掉；而工厂转型或者产能升级等原因，不需要这个流水线时，就会辞掉Run Loop这个主管，不再接收任何的订单，即退出线程，把所有的资源释放。
 
 
 
@@ -64,18 +64,43 @@ Run Loop支持处理输入源（Input Source）事件和计时器（Timer）事�
 Cocoa中已经为开发者实现了一些常用的自定义输入源，如Perform Selector、NSConnection等；
 如何配置输入源的使用场景较少，个人也没多少研究，有兴趣的通讯可以查看[官方文档](https://developer.apple.com/library/ios/documentation/Cocoa/Conceptual/Multithreading/RunLoopManagement/RunLoopManagement.html#//apple_ref/doc/uid/10000057i-CH16-SW3)
 
-需要注意的是，在启动Run Loop之前，必须先添加监听的输入源事件或者Timer事件，否则调用`[runLoop run]`会直接返回，而不会进入循环让线程长驻。所以，正确的使用方法如下：
+需要注意的是，在启动Run Loop之前，必须先添加监听的输入源事件或者Timer事件，否则调用`[runLoop run]`会直接返回，而不会进入循环让线程长驻。很多初学的开发者会写如下代码：
+
 
 ```
 - (void)main
 {
-	@autoreleasepool {
-		NSRunLoop *runLoop = [NSRunLoop currentRunLoop];
-	   	[runLoop addPort:[NSMachPort port] forMode:NSDefaultRunLoopMode];
-	    [runLoop run];
+	NSRunLoop *runLoop = [NSRunLoop currentRunLoop];
+	while (!self.isCancelled && !self.isFinished) {
+	    [runLoop runUntilDate:[NSDate dateWithTimeIntervalSinceNow:3]];
+	};
+}
+```
+上述代码，因为Run Loop没有添加任何输入源事件或Timers事件，会直接返回，这样的话，线程其实是一直在无限循环空转中，虽然让线程长驻不退出，但会一直占用着CPU，而没有实现资源的合理分配。在其他线程发送一个事件给该线程，系统会自动为Run Loop添加对应输入源或者Timer，让Run Loop正常运行。也可以手动添加输入源或者Timer来让Run Loop正常运行。
+
+而对于没有While循环直接使用Run Loop，而且没有添加输入源或Timer的线程，那么线程会直接完成并进入死亡状态，被系统回收。
+
+
+
+正确的使用方法应如下：
+
+```
+- (void)main
+{
+	NSRunLoop *runLoop = [NSRunLoop currentRunLoop];
+	[runLoop addPort:[NSMachPort port] forMode:NSDefaultRunLoopMode];
+	while (!self.isCancelled && !self.isFinished) {
+	    @autoreleasepool {
+	    	[runLoop runUntilDate:[NSDate dateWithTimeIntervalSinceNow:3]];
+	    }
 	}
 }
 ```
+
+**注意，Run Loop的每个循环必须加上@autoreleasepool，用于释放每个循环结束后不再需要的内存。**
+
+
+
 
 </br></br>
 #4. Run Loop Modes
@@ -192,7 +217,7 @@ Run Loop主要有以下三个应用场景：
 
 
 
-
+</br></br>
 
 
 参考：
@@ -202,5 +227,12 @@ Run Loop主要有以下三个应用场景：
 3. [阮一峰——进程与线程的一个简单解释](http://www.ruanyifeng.com/blog/2013/04/processes_and_threads.html)
 4. [Objc.io #2 Concurrent Programming](http://www.objc.io/issue-2/)
 
+
+
+<br/><br/>
+
+---
+
+版权所有，转载请保留[Jaminzzhang](http://oncenote.com/)署名
 
 
