@@ -5,22 +5,18 @@ title: 由App的启动说起
 
 
 >	The two most important days in your life are the day you are born and the day you find out why.
-
--- Mark Twain :
+>
+>   -- Mark Twain
 
 ---
 
-</br><
-/br>
-“你是谁？从哪里来？到哪里去？”，这三个富有哲学气息的问题，是每一个人在不断解答的问题。我们Code，Build，Run，一个活生生的App跃然方寸屏上，这一切是如何发生的？探寻App的启动，可以帮助我们了解
-
-打开一个App，就如同绽放一朵花，在展现最美丽刹那之前，必定经历一番孕育。那么从用户点击App到执行main函数这短短的瞬间都发生了些什么呢？
-
+</br>
+</br>
+“你是谁？从哪里来？到哪里去？”，这三个富有哲学气息的问题，是每一个人在不断解答的问题。我们Code，Build，Run，一个活生生的App跃然方寸屏上，这一切是如何发生的？从用户点击App到执行main函数这短短的瞬间发生了多少事呢？探寻App的启动新生，可以帮助我们更了解App开发本身。
 
 下图是App启动流程的关键节点展示：
 
 ![App启动流程](/assets/images/2015-05-26/mach-o_execution.png)
-
 
 
 </br>
@@ -316,9 +312,8 @@ execve(proc_t p, struct execve_args *uap, int32_t *retval)
 * 最后，关于Mach-O的入口点。解析完可执行二进制文件类型的Mach-O文件(假设为A)之后，我们会得到A的入口点；但线程并不立刻进入到这个入口点。这是由于我们还会加载动态链接器(dyld)，在`load_dylinker()`中，dyld会保存A的入口点，递归调用`parse_machfile()`之后，将线程的入口点设为dyld的入口点；动态链接器dyld完成加载库的工作之后，再将入口点设回A的入口点，程序启动完成；
 
 
-理解了上述逻辑之后，开始结合源代码来获得解析流程：
 
-
+理解了上述逻辑之后，我们通过源代码最直观地探索解析流程：
 
 ```
 // oncenote: oncenote: /bsd/kern/mach_loader.c  line: 483
