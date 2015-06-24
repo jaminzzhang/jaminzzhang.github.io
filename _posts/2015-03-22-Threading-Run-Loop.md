@@ -67,7 +67,8 @@ Cocoa中已经为开发者实现了一些常用的自定义输入源，如Perfor
 需要注意的是，在启动Run Loop之前，必须先添加监听的输入源事件或者Timer事件，否则调用`[runLoop run]`会直接返回，而不会进入循环让线程长驻。很多初学的开发者会写如下代码：
 
 
-```
+
+{% highlight Objective-C %}
 - (void)main
 {
 	NSRunLoop *runLoop = [NSRunLoop currentRunLoop];
@@ -75,7 +76,8 @@ Cocoa中已经为开发者实现了一些常用的自定义输入源，如Perfor
 	    [runLoop runUntilDate:[NSDate dateWithTimeIntervalSinceNow:3]];
 	};
 }
-```
+
+{% endhighlight%}
 
 上述代码，因为Run Loop没有添加任何输入源事件或Timer事件，会立刻返回，这样的话，线程其实是一直在无限循环空转中，虽然是让线程长驻不退出，但会一直占用着CPU的时间片，而没有实现资源的合理分配；在其他线程发送一个事件给该线程，系统会自动为Run Loop添加对应输入源或者Timer，让Run Loop正常运行。也可以手动添加输入源或者Timer来让Run Loop正常运行。添加了输入源或Timer事件的Run Loop在没有事件需要处理时，会让线程进行休眠，而不会占用着CPU的时间片。
 
@@ -85,7 +87,7 @@ Cocoa中已经为开发者实现了一些常用的自定义输入源，如Perfor
 
 正确的使用方法应如下：
 
-```
+{% highlight Objective-C %}
 - (void)main
 {
 	NSRunLoop *runLoop = [NSRunLoop currentRunLoop];
@@ -96,7 +98,8 @@ Cocoa中已经为开发者实现了一些常用的自定义输入源，如Perfor
 	    }
 	}
 }
-```
+
+{% endhighlight%}
 
 **注意，Run Loop的每个循环必须加上@autoreleasepool，用于释放每个循环结束后不再需要的内存。**
 
@@ -128,7 +131,8 @@ Run Loop可以通过`[acceptInputForMode:beforeDate:]`和`[runMode:beforeDate:]`
 
 在Run Loop模式中我们经常会遇到的一个问题是，在主线程，启动了一个计时器Timer，然后将手指放在一个UITableView或者UIScrollView上拖动时，计时器到了时间也不会执行。这是因为，为了更好的用户体验，在主线程中定义了Event tracking模式的优先级是最高的。当用户在拖动一个控件时，主线程的Run Loop是运行在Event tracking Mode下，而创建的Timer是默认关联为Default Mode，因此线程不会立刻执行Default Mode下接收的事件。解决的方法是：
 
-```
+
+{% highlight Objective-C %}
     NSTimer * timer = [NSTimer scheduledTimerWithTimeInterval:1.0
                                                        target:self
                                                      selector:@selector(timerFireMethod:)
@@ -137,7 +141,8 @@ Run Loop可以通过`[acceptInputForMode:beforeDate:]`和`[runMode:beforeDate:]`
     [[NSRunLoop mainRunLoop] addTimer:timer forMode:NSRunLoopCommonModes];
     //或 [[NSRunLoop currentRunLoop] addTimer:timer forMode:UITrackingRunLoopMode];
     [timer fire];
-```
+
+{% endhighlight%}
 
 
 
@@ -155,7 +160,8 @@ Run Loop主要有以下三个应用场景：
 
 该场景较为常见，Run Loop的作用主要是用于维护线程的生命周期，让线程不自动退出，但可以根据需要调用`[thread cancel]`，或者执行完某任务之后，在isFinished返回YES来退出线程。如下代码：
 
-```
+
+{% highlight Objective-C %}
 - (void)main
 {
 	NSRunLoop *runLoop = [NSRunLoop currentRunLoop];
@@ -166,14 +172,15 @@ Run Loop主要有以下三个应用场景：
 	    }
 	}
 }
-```
+
+{% endhighlight%}
 
 </br>
 ##5.2 长驻线程，用于执行一些预期会一直存在的任务
 
 如下代码，摘自AFNetworking库，创建一个长驻的线程，该线程的生命周期跟App相同，用于发送请求和接收回调。注意，该线程在启动之后，无法通过调用`[thread cancel]`俩结束线程（甚至`removePort:forMode:`也无法保证Run Loop会退出，因为系统可能会给Run Loop添加另外一些输入源）：
 
-```
+{% highlight Objective-C %}
 - (void)main
 {
 	@autoreleasepool {
@@ -182,7 +189,7 @@ Run Loop主要有以下三个应用场景：
 	    [runLoop run];
 	}
 }
-```
+{% endhighlight %}
 
 
 </br>
@@ -190,7 +197,7 @@ Run Loop主要有以下三个应用场景：
 
 如下代码所示，在30分钟内，每隔30s执行`onTimerFired:`。这种场景一般会出现在，如我需要在应用启动之后，在一定时间内持续更新某项数据。
 
-```
+{% highlight Objective-C %}
 - (void)main
 {
 	@autoreleasepool {
@@ -204,7 +211,8 @@ Run Loop主要有以下三个应用场景：
 	    [runLoop runUntilDate:[NSDate dateWithTimeIntervalSinceNow:60*30]];
 	}
 }
-```
+{% endhighlight %}
+
 
 
 

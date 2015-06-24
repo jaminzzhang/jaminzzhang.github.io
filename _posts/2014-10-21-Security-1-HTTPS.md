@@ -102,7 +102,7 @@ iOS授权验证的API和流程大概了解了，下面，我们看看在NSURLCon
 
 <br/>
 
-```
+{% highlight Objective-C %}
 // Now start the connection
 NSURL * httpsURL = [NSURL URLWithString:@"https://www.google.com"];
 self.connection = [NSURLConnection connectionWithRequest:[NSURLRequest requestWithURL:httpsURL] delegate:self];
@@ -132,7 +132,7 @@ self.connection = [NSURLConnection connectionWithRequest:[NSURLRequest requestWi
   }
 }
 
-```
+{% endhighlight %}
 <br/>
 
  
@@ -140,7 +140,8 @@ self.connection = [NSURLConnection connectionWithRequest:[NSURLRequest requestWi
 
 <br/>
 
-```
+
+{% highlight Objective-C %}
 //先导入证书
 NSString * cerPath = ...; //证书的路径
 NSData * cerData = [NSData dataWithContentsOfFile:cerPath];
@@ -174,7 +175,8 @@ self.trustedCertificates = @[CFBridgingRelease(certificate)];
   }
 }
 
-```
+{% endhighlight %}
+
 <br/>
 
 建议采用本地导入证书的方式验证证书，来保证足够的安全性。更多的验证方法，请查看官方文档[《HTTPS Server Trust Evaluation》](https://developer.apple.com/library/ios/technotes/tn2232/_index.html)  
@@ -189,7 +191,8 @@ AFNetworking上配置对HTTPS的支持非常简单：
 
 <br/>
 
-```
+
+{% highlight Objective-C %}
 NSURL * url = [NSURL URLWithString:@"https://www.google.com"];
 AFHTTPRequestOperationManager * requestOperationManager = [[AFHTTPRequestOperationManager alloc] initWithBaseURL:url];
 dispatch_queue_t requestQueue = dispatch_create_serial_queue_for_name("kRequestCompletionQueue");
@@ -218,7 +221,7 @@ securityPolicy.validatesCertificateChain = NO;
 requestOperationManager.securityPolicy = securityPolicy;
 
 
-```
+{% endhighlight %}
 <br/>
 
 

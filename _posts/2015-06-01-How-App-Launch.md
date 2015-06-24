@@ -9,9 +9,7 @@ title: 由App的启动说起
 >   -- Mark Twain
 
 ---
-
-</br>
-</br>
+<br/>
 “你是谁？从哪里来？到哪里去？”，这三个富有哲学气息的问题，是每一个人在不断解答的问题。我们Code，Build，Run，一个活生生的App跃然方寸屏上，这一切是如何发生的？从用户点击App到执行main函数这短短的瞬间发生了多少事呢？探寻App的启动新生，可以帮助我们更了解App开发本身。
 
 下图是App启动流程的关键节点展示：
@@ -19,13 +17,11 @@ title: 由App的启动说起
 ![App启动流程](/assets/images/2015-05-26/mach-o_execution.png)
 
 
-</br>
 
 下面我们就来一一解读。
 
-
-</br>
-</br>
+<br/>
+<br/>
 
 #1. App文件的组成
 ---
@@ -51,14 +47,16 @@ OS X应用和iOS应用两者的bundle结构有些许差别，OS X的应用程序
 
 其中xxx.app就是我们的app应用程序，主要包含了执行文件（xxx.app/xxx， xxx为应用名称）、NIB和图片等资源文件。接下来就主要看看本节的主角：** Mach-O **
 
-</br>
+
+<br/>
 ##1.1 Universal Binary
 
 大部分情况下，xxx.app/xxx文件并不是Mach-O格式文件，由于现在需要支持不同CPU架构的iOS设备，所以我们编译打包出来的执行文件是一个Universal Binary格式文件（通用二进制文件，也称胖二进制文件），其实Universal Binary只不过将支持不同架构的Mach-O打包在一起，再在文件起始位置加上Fat Header来说明所包含的Mach-O文件支持的架构和偏移地址信息；
 
 Fat Header的数据结构在<mach-o/fat.h>头文件上有定义：
 
-```
+
+{% highlight c %}
 #define FAT_MAGIC	0xcafebabe
 #define FAT_CIGAM	0xbebafeca	/* NXSwapLong(FAT_MAGIC) */
 
@@ -75,7 +73,8 @@ struct fat_arch {
 	uint32_t	align;		/* alignment as a power of 2 */
 };
 
-```
+
+{% endhighlight %}
 
 结构`struct fat_header`：
 
@@ -96,7 +95,8 @@ ps：上述说“大部分情况”是因为还有一部分，由于业务比较
 
 ![file查看QQ](/assets/images/2015-05-26/file_qq.png)
 
-*ps:QQ V5.5.1版本单个Mach-O文件大小为51M*
+ps:QQ V5.5.1版本单个Mach-O文件大小为51M
+
 
 </br>
 ##1.2 [Mach-O](https://developer.apple.com/library/mac/documentation/DeveloperTools/Conceptual/MachORuntime/index.html#//apple_ref/doc/uid/TP40000895)
@@ -108,10 +108,10 @@ ps：上述说“大部分情况”是因为还有一部分，由于业务比较
 
 
 由上图，我们可以看到Mach-O文件主要包含一下三个数据区：
-
+<br/>
 (1). **头部Header**：在<mach-o/loader.h>头文件定义了Mach-O Header的数据结构：
 
-```
+{% highlight c %}
 /*
  * The 32-bit mach header appears at the very beginning of the object file for
  * 32-bit architectures.
@@ -129,32 +129,32 @@ struct mach_header {
 /* Constant for the magic field of the mach_header (32-bit architectures) */
 #define	MH_MAGIC	0xfeedface	/* the mach magic number */
 #define MH_CIGAM	0xcefaedfe	/* NXSwapInt(MH_MAGIC) */
-```
+{% endhighlight %}
 
 以上引用代码是32位的文件头数据结构，<mach-o/loader.h>头文件还定义了64位的文件头数据结构`mach_header_64`，两者基本没有差别，`mach_header_64`多了一个额外的预留字段`uint32_t	reserved;`，该字段目前没有使用。需要注意的是，64位的Mach-O文件的魔数值为`#define MH_MAGIC_64 0xfeedfacf`。
 
-
+<br/>
 
 (2). **加载命令 Load Commends**：
 
 在mach_header之后的是加载命令，这些加载命令在Mach-O文件加载解析时，被内核加载器或者动态链接器调用，指导如何设置加载对应的二进制数据段；Load Commend的数据结构如下：
 
-```
+
+{% highlight c %}
 struct load_command {
 	uint32_t cmd;		/* type of load command */
 	uint32_t cmdsize;	/* total size of command in bytes */
 };
-
-```
+{% endhighlight %}
 
 OS X/iOS发展到今天，已经有40多条加载命令，其中部分是由内核加载器直接使用，而其他则是由动态链接器处理。其中几个主要的Load Commend为`LC_SEGMENT`, `LC_LOAD_DYLINKER`, `LC_UNIXTHREAD`, `LC_MAIN`等，这里不详细介绍，在<mach-o/loader.h>头文件有简单的注释，后续内核还会涉及。
 
 
-*ps: [otool](http://www.unix.com/man-page/osx/1/otool/)是查看操作Mach-O文件的工具，类似于UNIX下的ldd或readelf工具。*
-*  [MachOView](http://sourceforge.net/projects/machoview/)是查看Mach-O文件的可视化工具。*
+* ps: [otool](http://www.unix.com/man-page/osx/1/otool/)是查看操作Mach-O文件的工具，类似于UNIX下的ldd或readelf工具。
+* [MachOView](http://sourceforge.net/projects/machoview/)是查看Mach-O文件的可视化工具。
 
 
-</br>
+<br/>
 
 (3). **原始段数据 Raw segment data**
 
@@ -166,21 +166,20 @@ OS X/iOS发展到今天，已经有40多条加载命令，其中部分是由内�
 * 4). __OBJC: Objective-C运行时支持库；
 * 5). __LINKEDIT: 链接器使用的符号以及其他表
 
-一般的段又会按不同的功能划分为几个区（section），标识段-区的表示方法为(__SEGMENT.__section)，即段所有字母大小，加两个下横线作为前缀，而区则为小写，同样加两个下横线作为前缀；更多关于常见section的解析，请查看[https://developer.apple.com/library/mac/documentation/DeveloperTools/Conceptual/MachORuntime/](https://developer.apple.com/library/mac/documentation/DeveloperTools/Conceptual/MachORuntime/)
+一般的段又会按不同的功能划分为几个区（section），标识段-区的表示方法为(__SEGMENT.__section)，即段所有字母大小，加两个下横线作为前缀，而区则为小写，同样加两个下横线作为前缀；更多关于常见section的解析，请查看 [https://developer.apple.com/library/mac/documentation/DeveloperTools/Conceptual/MachORuntime/](https://developer.apple.com/library/mac/documentation/DeveloperTools/Conceptual/MachORuntime/)
 
 
 
 
 
-
-</br>
-</br>
+<br/><br/>
 #2. 内核Kernel
 ---
 
 了解了App执行文件之后，我们从源码来看看，App经过了什么样的内核调用流程之后，来到了主程序入口main()。
 
 
+<br/>
 ##2.1 [XNU开源代码](http://opensource.apple.com/tarballs/xnu/)
 
 
@@ -191,7 +190,7 @@ OS X/iOS发展到今天，已经有40多条加载命令，其中部分是由内�
 
 
 
-
+<br/>
 ##2.2 内核调用流程
 
 
@@ -199,16 +198,16 @@ OS X/iOS发展到今天，已经有40多条加载命令，其中部分是由内�
 
 ![启动进程的流程](/assets/images/2015-05-26/flow_of_process_execution.png)
 
-*引用自《Mac OS X and iOS Internals : To the Apple's Core》P555*
+引用自《Mac OS X and iOS Internals : To the Apple's Core》P555
 
 
 上述流程对应到源代码的调用树为：
 
-*ps: 由于源代码较多，篇幅所限，只引用关键性的代码，并有简单的注释，本人注释以oncenote未前缀.*
+*ps: 由于源代码较多，篇幅所限，只引用关键性的代码，并有简单的注释，本人注释以oncenote为前缀.*
 
 
 
-```
+{% highlight c %}
 // oncenote: /bsd/kern/ker_exec.c  line: 2615
 execve(proc_t p, struct execve_args *uap, int32_t *retval) 
 {
@@ -283,18 +282,16 @@ execve(proc_t p, struct execve_args *uap, int32_t *retval)
 	}
 	
 }
-
-
-```
+{% endhighlight %}
 
 
 由于篇幅所限，本文就不对源码进行展开讲解。通过上述的调用树，App启动在内核中的大概流程已非常清晰，如想更深入研究，请下载[源代码](http://opensource.apple.com/tarballs/xnu/xnu-2782.1.97.tar.gz)，并辅以文末参考资料，进行阅读；
 
-<br>	
 
 
 
 
+<br/>
 ##2.3 加载并解析Mach-O文件
 
 
@@ -315,7 +312,8 @@ execve(proc_t p, struct execve_args *uap, int32_t *retval)
 
 理解了上述逻辑之后，我们通过源代码最直观地探索解析流程：
 
-```
+
+{% highlight c %}
 // oncenote: oncenote: /bsd/kern/mach_loader.c  line: 483
 static
 load_return_t
@@ -515,14 +513,16 @@ parse_machfile(
 	return(ret);
 }
 
-```
+
+{% endhighlight %}
 
 
 
 
 再来看`load_dylinker()`的代码：
 
-```
+
+{% highlight c %}
 
 static load_return_t
 load_dylinker(
@@ -574,17 +574,16 @@ load_dylinker(
 	return (ret);
 }
 
-```
+{% endhighlight %}
 
 
-
-</br>
-</br>
+<br/>
+<br/>
 
 #3. 总结
 ---
 
-之前对App流程有个大体的概念，但于细节并不完全清楚，耗时1个多月，边学边复习边写文章，终于在出行旅游前完成。原计划是准备在第三段讲解下动态链接器dyld加载共享库的流程的，但限于本文篇幅实在太长，所以新起一篇文章来写会好一点。
+之前对App流程有个大体的概念，但于细节并不甚清楚，耗时1个多月，边学边复习边写文章，终于在出行旅游前完成。原计划是准备在第三段讲解下动态链接器dyld加载共享库的流程的，但限于本文篇幅实在太长，所以新起一篇文章来写会好一点。
 
 
 关于App启动流程还有许多细节，如代码签名验证、虚存映射、iOS的触屏应用加载器SpringBoard如何进行切换应用等，本文并未涉及到，有兴趣的同学可以继续深入研究。
@@ -595,7 +594,7 @@ load_dylinker(
 
 
 
-</br></br>
+<br/><br/>
 
 
 参考资料：
