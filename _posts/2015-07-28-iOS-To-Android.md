@@ -86,8 +86,11 @@ Activity就相当于iOS的ViewController，用法也基本上大同小异，上�
 ##2.3 [Intent](http://developer.android.com/intl/zh-cn/guide/components/intents-filters.html)
 
 Intent，官方文档的描述： an abstract description of an operation to be performed。是用来向其他App组件请求操作的消息对象。简单的来说，Intent就是封装数据和Action的消息体。主要用于：
+
 1）启动一个Activity: `startActivity(Intent intent, Bundle options);`
+
 2）发送广播: `sendBroadcast(Intent intent)`
+
 3）启动服务: `startService(Intent intent)`
 
 在iOS方面，并没有与Intent相对应的组件，iOS并没有封装消息体，一般都是使用Dictionary来传递信息，而切换到新的ViewController，一般都是直接通过接口约定好的对象参数来传递。
