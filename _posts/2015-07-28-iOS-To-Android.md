@@ -5,9 +5,9 @@ title: iOS到Android到底有多远
 
 <br/>
 
-在iOS开发混了4年之后，终于又重拾荒废了4年的Android，感触别样横生，有时间我们会回顾下2010当年的iOS/Android开发萌芽期的状况；
+在iOS开发混了4年之后，又重拾荒废了4年的Android，感慨时间过得太快，有时间我们会回顾下2010当年的iOS/Android平台的萌芽期历史；
 
-从重拾摸索，到比较熟练的进行开发，再到上线两个App，也就四五个月时间。这段时间的学习和研究，自觉有蛮多的冲击和提高。本文主要从iOS转入Android开发，对比两个平台应用开发的异同的一点总结，希望对想学习Android开发的iOS开发者，或者想从Android兼iOS开发的同学，有所帮助。另，Objc也做过一期Android的专题，讲的还可以，可以看看：[objc#Android#](http://www.objc.io/issues/11-android/)
+从重拾摸索，再到上线两个App，四五个月时间。这段时间的学习和研究，颇多冲击和体会，所以就有了这篇文章。本文主要从iOS转Android开发角度，对比两个平台应用开发的异同。希望对想学习Android开发的iOS开发者，或者想兼Android、iOS开发的同学，有所帮助。另，Objc也做过一期Android的专题，讲的还可以：[objc#Android#](http://www.objc.io/issues/11-android/)
 
 <br/>
 <br/>
@@ -17,7 +17,7 @@ title: iOS到Android到底有多远
 
 #1 语言
 
-从iOS到Android开发，首先遇到的难题就是编程语言的变更，由于笔者在大学时，跟着实验室老师做项目就是用Java写写J2EE，所以Java的基础知识还记得，简单看看代码基本就上手了。
+从iOS到Android开发，首先遇到的难题就是编程语言的改变，由于在大学时，跟着实验室老师做项目就是用Java写J2EE，所以Java的基础知识还记得，简单看看代码基本就上手了。
 
 编程语言的争论对比由来已久，本文并不想引发月经般的口水战，没有全能的语言，只能说在不同语言有不同的适应场景。作为比Java早生整整13年的Objective-C（Objective-C: 1982, Java: 1995，来源于Wiki），整体上来说，在语言特性方面落后于Java太多，那么多年才发展到版本2，而Java已然来到了版本9。从iOS到Android，对比Objective-C和Java，更深刻理解Objective-C语言的局限性：
 
@@ -44,7 +44,7 @@ OC无法使用public/private/protected/final等关键字来控制方法的访问
 
 当然，跟Java相比，OC也有非常多的优势，如比GC更高效的内存管理，更简单易用的多线程，更为明确的语义风格等。但从长远来看，OC已落后Java一个身位，跟不上当前iOS/OSX系统的发展，而由于设计理念和历史包袱存在，重新发明一种新的编程语言势在必行，才有了Swift的横空出世、应运而生。Swift确实是新一代的编程语言，吸收了多种面向对象高级编程语言以及脚本语言的优点。随着Swift 2.0的发布并开源，该语言日趋稳定，建议iOS开发同学可以开始深入学习了，Swift替换Objective-C，很可能比你想象的要快。
 
-反观Android这边，Java方兴未艾，而Go作为Google的明星编程语言，去年开始支持Android NDK的开发，而并取代Java的计划；以Java现有的基数以及在服务端的占有率，Go要取代Java，可能需要等到Go在Server端编程语言市场超过Java才有可能。
+反观Android这边，Java方兴未艾，而Go作为Google的明星编程语言，去年开始支持Android NDK的开发，而并没有取代Java的计划；以Java现有的基数以及在服务端的占有率，Go想在要在Android平台上取代Java，可能需要等到Go在Server端超过Java才有可能。
 
 
 <br/><br/>
