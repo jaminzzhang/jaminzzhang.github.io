@@ -5,7 +5,7 @@ title: iOS到Android到底有多远
 
 <br/>
 
-在iOS开发混了4年之后，又重拾荒废了4年的Android，感慨时间过得太快，有时间我们会回顾下2010当年的iOS/Android平台的萌芽期历史；
+在iOS开发混了4年之后，又重拾荒废了4年的Android，感慨时间过得太快，有时间我会回顾下2010当年的iOS/Android平台的萌芽期历史；
 
 从重拾摸索，再到上线两个App，四五个月时间。这段时间的学习和研究，颇多冲击和体会，所以就有了这篇文章。本文主要从iOS转Android开发角度，对比两个平台应用开发的异同。希望对想学习Android开发的iOS开发者，或者想兼Android、iOS开发的同学，有所帮助。另，Objc也做过一期Android的专题，讲的还可以：[objc#Android#](http://www.objc.io/issues/11-android/)
 
