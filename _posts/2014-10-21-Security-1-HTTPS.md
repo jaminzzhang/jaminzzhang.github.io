@@ -75,11 +75,28 @@ title: iOS安全系列之一：HTTPS
 
 一般操作系统和浏览器只包含根CA机构的证书，而在配置Web服务器的HTTPS时，也会将配置整个证书链，所以整个校验流程是从最后的叶子节点证书开始，用父节点校验子节点，一层层校验整个证书链的可信性。
 
-
 打个比喻：父（根CA数字证书）-子（CA数字证书）-孙（数字证书）三代人，假设父没有其他兄弟（相当于根CA机构是唯一的），假如子与父进行DNA亲子鉴定，检测DNA位点（即证书签名）相同，那就基本确定子是由父所生；孙与子一样。这样就能够确定孙肯定是源于父一脉，是父（根CA数字证书）的合法继承人。数字证书的验证就是基于同样的原理。
+  
+<br/><br/>
+##[Basic Constraint](https://tools.ietf.org/html/rfc5280#section-4.2.1.9)校验漏洞
+
+那是否不管多少层都可以这样一直信任下去呢？理论上是可行的，但会遇到一个问题。假设我从可信CA机构购买了一张证书，使用这张证书签发的证书是否也会被操作系统和浏览器信任呢？明显是不应该相信的，因为我并不是CA机构，假如我签发的证书也被信任的话，那我完全可以自己签发任何域名的证书来进行伪造攻击。这就是著名的[Basic Constraint](https://tools.ietf.org/html/rfc5280#section-4.2.1.9)校验漏洞，X.509证书中的Basic Constraint包含了这是不是一个CA机构，以及有效证书路径的最大深度（即，这个CA还能否继续签发CA机构证书及其签发子CA证书的路径深度）。但在几年前，包括微软和Apple都爆出了没有正确校验这些信息的漏洞。
+
+Basic Constraint信息请看下图：
+
+<br/>
+![Google Internet Authority G2](/assets/images/2014-10-21/google-ca2.png)
 
 
-了解了上面两个概念之后，对HTTPS就有了个初步的了解，下面我们看如何在iOS上实现对HTTPS的支持。
+上图是Google Internet Authority G2的证书，该证书是个CA机构证书；路径深度为0，表示该证书无法再签发CA证书，只能签发客户证书(client certificate)。
+
+<br/>
+![google.com](/assets/images/2014-10-21/google-cer.png)
+
+上图是google.com的证书，这是个客户证书(client certificate)，不可再签发子证书，所以由该证书签发的子证书是不会被信任的。
+
+
+了解了上面关于SSL/TSL通信加密策略以及数字证书的概念之后，对HTTPS的安全机制就有了个初步的了解，下面我们看如何在iOS上实现对HTTPS的支持。
 
   
 <br/><br/>
