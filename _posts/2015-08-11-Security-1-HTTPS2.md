@@ -180,7 +180,7 @@ SSL代理设置，在Locations上可以设置想要进行SSL代理的域名，�
 上一节对中间人攻击进行了简单介绍，本节就上一节我们遇到的安全隐患问题，来讨论下在App中，应该怎么校验服务器返回的SSL证书，来保证HTTPS通信的安全。上一篇文章[《iOS安全系列之一：HTTPS》]({% post_url 2014-10-21-Security-1-HTTPS %})有对基本校验过程相关代码进行讲解，本文不会赘述这些细节，而是主要讨论校验证书中几个重要的点：
 
 <br/>
-## 1.1 域名验证
+## 2.1 域名验证
 
 前不久，iOS上最知名的网络开源库AFNetworking爆出[HTTPS校验漏洞](http://blog.mindedsecurity.com/2015/03/ssl-mitm-attack-in-afnetworking-251-do.html)，该漏洞是因为其校验策略模块 `AFSecurityPolicy` 内的参数 `validatesDomainName` 默认为NO，这会导致校验证书的时候不会校验这个证书对应的域名。即请求返回的服务器证书，只要是可信任CA机构签发的，都会校验通过，这是非常严重的漏洞。该漏洞已在v2.5.2版本中修复，对应Git版本号[3e631b203dd95bb82dfbcc2c47a2d84b59d1eeb4](https://github.com/AFNetworking/AFNetworking/commit/3e631b203dd95bb82dfbcc2c47a2d84b59d1eeb4#diff-508d2e2e91b3a2789fb4bf053ec4b125)。
 
@@ -254,7 +254,7 @@ SSL代理设置，在Locations上可以设置想要进行SSL代理的域名，�
 
 
 <br/>
-## 1.2 校验证书链？
+## 2.2 校验证书链？
 
 [上一篇文章]({% post_url 2014-10-21-Security-1-HTTPS %})介绍系统验证SSL证书的方法和流程时，不是已经说明了会对证书链进行层层校验，已保证证书的可信么？为什么还需要讨论这一问题？其实本节要讨论的是`AFNetworking`中`validatesCertificateChain`的问题。
 
@@ -267,7 +267,7 @@ SSL代理设置，在Locations上可以设置想要进行SSL代理的域名，�
 开启`validatesCertificateChain`请求[https://google.com](https://google.com)，则需要将GeoTrust Global CA、Google Internet Authority G2和google.com的证书都导入App中才能验证通过。请回忆下[上一篇文章]({% post_url 2014-10-21-Security-1-HTTPS %})关于证书链的可信任机制，会发现这是完全没有必要的；证书链的验证，主要由三部分来保证证书的可信：叶子证书是对应HTTPS请求域名的证书，根证书是被系统信任的证书，以及这个证书链之间都是层层签发的；这些就是系统验证的步骤，也就是系统确人使用该证书的服务器是请求域名对应的服务器。经过系统验证通过的证书链，两端被确认可信，那中间的任一节点也是可信的，不需要把中间节点都一一对比验证。
 
 <br/>
-## 1.3打包证书校验
+## 2.3打包证书校验
 
 那是否就不需要在App本地打包证书进行验证了呢？
 这时需要想想为什么伪造证书是可以实现中间人攻击的？答案就在于用户让系统信任了不应该信任的证书。用户设置系统信任的证书，会作为锚点证书(Anchor Certificate)来验证其他证书，当返回的服务器证书是锚点证书或者是基于该证书签发的证书（可以是多个层级）都会被信任。所以我们不能完全相信系统的校验，因为系统的校验对比的源很可能被污染了。
