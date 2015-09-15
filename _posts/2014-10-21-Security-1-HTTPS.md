@@ -167,7 +167,7 @@ self.connection = [NSURLConnection connectionWithRequest:[NSURLRequest requestWi
 <br/>
 
  
-上面是代码是通过系统默认验证流程来验证证书的。假如我们是自建证书的呢？这样Trust Object里面服务器的证书因为不是可信任的CA签发的，所以直接使用`SecTrustEvaluate`进行验证是不会成功。又或者，即使服务器返回的证书是信任CA签发的，又如何确定这证书就是我们想要的特定证书？这就需要先在本地导入证书，设置成需要参与验证的[Anchor Certificate](https://en.wikipedia.org/wiki/Trust_anchor)（锚点证书，通过`SecTrustSetAnchorCertificates`设置了参与校验锚点证书之后，假如验证的数字证书是这个锚点证书的子节点，即验证的数字证书是由锚点证书对应CA或子CA签发的，则信任该证书），再调用`SecTrustEvaluate`来验证。代码如下
+上面是代码是通过系统默认验证流程来验证证书的。假如我们是自建证书的呢？这样Trust Object里面服务器的证书因为不是可信任的CA签发的，所以直接使用`SecTrustEvaluate`进行验证是不会成功。又或者，即使服务器返回的证书是信任CA签发的，又如何确定这证书就是我们想要的特定证书？这就需要先在本地导入证书，设置成需要参与验证的[Anchor Certificate](https://en.wikipedia.org/wiki/Trust_anchor)（锚点证书，通过`SecTrustSetAnchorCertificates`设置了参与校验锚点证书之后，假如验证的数字证书是这个锚点证书的子节点，即验证的数字证书是由锚点证书对应CA或子CA签发的，或是该证书本身，则信任该证书），再调用`SecTrustEvaluate`来验证。代码如下
 
 <br/>
 
