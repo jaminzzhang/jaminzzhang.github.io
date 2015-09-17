@@ -417,7 +417,7 @@ ATS要求运行在iOS9的App，需将HTTP连接升级到HTTPS，并且TLS版本�
 
 
 
-相关SSL/TLS接口信息，请查看：[RFC5246](https://tools.ietf.org/html/rfc5246)以及[SSL/TLS in Detail](https://technet.microsoft.com/en-us/library/cc785811(v=ws.10).aspx)
+相关SSL/TLS接口信息，请查看：[RFC5246](https://tools.ietf.org/html/rfc5246)以及[SSL/TLS in Detail](https://technet.microsoft.com/en-us/library/cc785811.aspx)
 
 
 上面已抓取的HTTPS请求为例，简单介绍了SSL/TLS的握手流程。下面就列举下调试适配ATS过程中遇到的主要问题：
