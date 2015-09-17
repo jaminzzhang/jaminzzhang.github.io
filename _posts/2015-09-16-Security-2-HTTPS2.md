@@ -407,7 +407,6 @@ ATS要求运行在iOS9的App，需将HTTP连接升级到HTTPS，并且TLS版本�
 
 * [RFC5246#Handshake Protocol Overview](https://tools.ietf.org/html/rfc5246#section-7.3)查看Handshake的流程和相关信息。
 * Apple官方开发文档：[TLS Session Cache](https://developer.apple.com/library/ios/qa/qa1727/_index.html)
-* 
 
 <br/>
 4) 客户端确认证书有效，则会生产最后一个随机数(Premaster secret)，并使用证书的公钥RSA加密这个随机数，发回给服务端。为了更高的安全性，会改为[Diffie-Hellman算法](http://zh.wikipedia.org/wiki/迪菲－赫尔曼密钥交换)（简称DH算法）；采用DH算法，最后一个随机数(Premaster secret)是不需要传递的，客户端和服务端交换参数之后就可以算出。`Client Key Exchange`(No. 75帧)；
