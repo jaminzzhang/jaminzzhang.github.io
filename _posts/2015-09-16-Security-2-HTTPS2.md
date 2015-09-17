@@ -12,14 +12,15 @@ title: iOS安全系列之二：HTTPS进阶
 2. [校验证书的正确姿势](#verify_safely)：介绍校验证书的一些误区，并讨论了正确校验方式；
 3. [ATS](#ats)：讨论下 iOS 9.0 新发布的的特性`App Transport Security`；
 4. [调试SSL/TLS](#debug_ssl)：讨论使用Wireshark进行SSL/TLS调试的方法；
+5. [后记](#summary)
 
-其中第1节“中间人”是比较常见基础的知识，网上也可以找到相关的资料，如果对中间人攻击已经有了足够的了解，可以跳过。后面几节则是个人在iOS方面的实践总结，除了一些与系统相关的特性外，大部分都是系统无关的通用知识，有点干货。
+其中第1节“中间人”是比较常见基础的知识，网上也可以找到相关的资料，如果对中间人攻击已经有了足够的了解，可以跳过。后面几节则是个人在iOS方面的实践总结，除了一些与系统相关的特性外，大部分都是系统无关的通用知识，并且每一章节都比较独立，所以可以直接跳到感兴趣的地方阅读。
 
 
 
 <br/><br/>
 # <a name="mitm"></a>1. 中间人攻击
-关于HTTPS，我经常会提到的就是中间人攻击，那究竟什么是中间人攻击呢？中间人攻击，即所谓的[Main-in-the-middle attack(MITM)](https://en.wikipedia.org/wiki/Man-in-the-middle_attack)，顾名思义，就是攻击者插入到原本直接通讯的双方，让双方以为还在直接跟对方通讯，但实际上双方的通讯对方已变成了中间人，信息已经是被中间人获取或篡改。
+关于HTTPS，我经常会提到的就是中间人攻击，那究竟什么是中间人攻击呢？中间人攻击，即所谓的[Main-in-the-middle attack(MITM)](https://en.wikipedia.org/wiki/Man-in-the-middle_attack)，顾名思义，就是攻击者插入到原本直接通信的双方，让双方以为还在直接跟对方通讯，但实际上双方的通信对方已变成了中间人，信息已经是被中间人获取或篡改。
 
 <br/>
 ![MITM](http://s017.radikal.ru/i435/1201/07/2df312b053cf.gif)
@@ -84,7 +85,7 @@ SSL剥离，即将HTTPS连接降级到HTTP连接。假如客户端直接访问HT
 ### 防范措施：
 这类攻击手段是利用SSL算法的相关漏洞，所以最好的防范措施就是对服务端 SSL/TLS 的配置进行升级：
 
-* 只支持尽量高版本的TLS（最低TLS1）；
+* 只支持尽量高版本的TLS（最低TLSv1）；
 * 禁用一些已爆出安全隐患的加密方法；
 * 使用2048位的数字证书；
 
@@ -249,28 +250,29 @@ SSL代理设置，在Locations上可以设置想要进行SSL代理的域名，�
 
 {% endhighlight %}
 
-从代码上看，逻辑是否变得更清晰了？而且也表明系统默认的校验方式是会验证域名的。实际上`SecTrustSetPolicies`重新设置校验策略是用于使用IP进行HTTPS请求，或者一个证书用于多个域名的场景；在这些场景下，服务器证书上的域名和请求域名就会出现不一致，导致校验不通过；这就需要重新设置下校验策略，把这个证书对应的域名设置下。详细说明请查看官方文档：[《Overriding TLS Chain Validation Correctly》](https://developer.apple.com/library/ios/documentation/NetworkingInternet/Conceptual/NetworkingTopics/Articles/OverridingSSLChainValidationCorrectly.html)
+从代码上看，逻辑是否变得更清晰了？而且也表明系统默认的校验方式是会验证域名的。实际上调用`SecTrustSetPolicies`来重新设置校验策略，主要是用于使用IP进行HTTPS请求，或者一个证书用于多个域名的场景；在这些场景下，服务器证书上的域名和请求域名（可能是IP，也可能是其他域名）就会出现不一致，导致校验不通过；这就需要重新设置下校验策略，把这个证书对应的域名设置下。详细说明请查看官方文档：[《Overriding TLS Chain Validation Correctly》](https://developer.apple.com/library/ios/documentation/NetworkingInternet/Conceptual/NetworkingTopics/Articles/OverridingSSLChainValidationCorrectly.html)
 
 
 
 <br/>
 ## 2.2 校验证书链？
 
-[上一篇文章]({% post_url 2014-10-21-Security-1-HTTPS %})介绍系统验证SSL证书的方法和流程时，不是已经说明了会对证书链进行层层校验，已保证证书的可信么？为什么还需要讨论这一问题？其实本节要讨论的是`AFNetworking`中`validatesCertificateChain`的问题。
+[上一篇文章]({% post_url 2014-10-21-Security-1-HTTPS %})介绍系统验证SSL证书的方法和流程时，不是已经说明了会对证书链进行层层校验，以保证证书的可信么？为什么还需要讨论这一问题？其实本节要讨论的是`AFNetworking`中`validatesCertificateChain`的问题。
 
-首先说明下结果：在`AFNetworking`最新发布的[V2.6.0](https://github.com/AFNetworking/AFNetworking/releases/tag/2.6.0)，已经将该特性去掉了。相关的讨论：[SSL Pinning: What Should Be Certificate Chain Validation Expected Behavior?#2744](https://github.com/AFNetworking/AFNetworking/issues/2744)
+先说明下结果：在`AFNetworking`最新发布的[V2.6.0](https://github.com/AFNetworking/AFNetworking/releases/tag/2.6.0)，已经将该特性去掉了。相关的讨论：[SSL Pinning: What Should Be Certificate Chain Validation Expected Behavior?#2744](https://github.com/AFNetworking/AFNetworking/issues/2744)
 
-`AFNetworking`中实现的验证证书链，是讲App本地打包好的证书与服务器返回的证书链进行数据上的一一对比，只有本地打包好的证书中包含了服务器返回的证书链上的所有证书，校验才会通过。如google的SSL证书：
+`AFNetworking`中实现的验证证书链，是将App本地打包好的证书与服务器返回的证书链进行数据上的一一对比，只有打包到App的证书中包含了服务器返回的证书链上的所有证书，校验才会通过。如google的SSL证书：
 
 ![Google Cer Chain](/assets/images/2014-10-21/google-cer.png)<br/>
 
-开启`validatesCertificateChain`请求[https://google.com](https://google.com)，则需要将GeoTrust Global CA、Google Internet Authority G2和google.com的证书都导入App中才能验证通过。请回忆下[上一篇文章]({% post_url 2014-10-21-Security-1-HTTPS %})关于证书链的可信任机制，会发现这是完全没有必要的；证书链的验证，主要由三部分来保证证书的可信：叶子证书是对应HTTPS请求域名的证书，根证书是被系统信任的证书，以及这个证书链之间都是层层签发的；这些就是系统验证的步骤，也就是系统确人使用该证书的服务器是请求域名对应的服务器。经过系统验证通过的证书链，两端被确认可信，那中间的任一节点也是可信的，不需要把中间节点都一一对比验证。
+开启`validatesCertificateChain`后请求[https://google.com](https://google.com)，需要将GeoTrust Global CA、Google Internet Authority G2和google.com的证书都导入App中才能验证通过。请回忆下[上一篇文章]({% post_url 2014-10-21-Security-1-HTTPS %})关于证书链的可信任机制，会发现这是完全没有必要的；证书链的验证，主要由三部分来保证证书的可信：叶子证书是对应HTTPS请求域名的证书，根证书是被系统信任的证书，以及这个证书链之间都是层层签发可信任链；证书之所以能成立，本质是基于信任链，这样任何一个节点证书加上域名校验（CA机构不会为不同的对不同的用户签发相同域名的证书），就确定一条唯一可信证书链，所以不需要每个节点都验证。
 
 <br/>
 ## 2.3打包证书校验
 
-那是否就不需要在App本地打包证书进行验证了呢？
-这时需要想想为什么伪造证书是可以实现中间人攻击的？答案就在于用户让系统信任了不应该信任的证书。用户设置系统信任的证书，会作为锚点证书(Anchor Certificate)来验证其他证书，当返回的服务器证书是锚点证书或者是基于该证书签发的证书（可以是多个层级）都会被信任。所以我们不能完全相信系统的校验，因为系统的校验对比的源很可能被污染了。
+那是否就不需要在App中打包证书进行验证了呢？
+
+这时需要想想为什么伪造证书是可以实现中间人攻击的？答案就在于用户让系统信任了不应该信任的证书。用户设置系统信任的证书，会作为锚点证书(Anchor Certificate)来验证其他证书，当返回的服务器证书是锚点证书或者是基于该证书签发的证书（可以是多个层级）都会被信任。这就是基于信任链校验方式的最大弱点。我们不能完全相信系统的校验，因为系统的校验依赖的证书的源很可能被污染了。这就需要选取一个节点证书，打包到App中，作为Anchor Certificate来保证证书链的唯一性和可信性。
 
 所以还是需要App本地打包证书，使用`SecTrustSetAnchorCertificates(SecTrustRef trust, CFArrayRef anchorCertificates)`来设置Anchor Certificate进行校验。需要注意的是，官方文档[《Certificate, Key, and Trust Services Reference》](https://developer.apple.com/library/mac/documentation/Security/Reference/certifkeytrustservices/#//apple_ref/c/func/SecTrustCopyAnchorCertificates)针对传入的 Anchor Certificates 有说明：
 
@@ -287,15 +289,15 @@ anchorCertificatesOnly:
 If true, disables trusting any anchors other than the ones passed in with the SecTrustSetAnchorCertificates function.  If false, the built-in anchor certificates are also trusted. If SecTrustSetAnchorCertificates is called and SecTrustSetAnchorCertificatesOnly is not called, only the anchors explicitly passed in are trusted.
 ```
 
-只相信传入的锚点证书，也就只会验证通过由这些锚点证书签发的证书。这样就算被验证的证书是由系统信任的锚点证书签发的，也无法验证通过。
+只相信传入的锚点证书，也就只会验证通过由这些锚点证书签发的证书。这样就算被验证的证书是由系统其他信任的锚点证书签发的，也无法验证通过。
 
-最后一个问题：选择证书链的哪一节点作为锚点证书打包到App中呢？很多开发者会直接选择叶子证书。其实对于自建证书来说，选择哪一节点都是可行的。而对于由CA颁发的证书，则建议导入颁发该证书的CA机构证书或者是更上一级CA机构的证书，甚至可以是根证书。这是因为：
+最后一个问题：选择证书链的哪一节点作为锚点证书打包到App中？很多开发者会直接选择叶子证书。其实对于自建证书来说，选择哪一节点都是可行的。而对于由CA颁发的证书，则建议导入颁发该证书的CA机构证书或者是更上一级CA机构的证书，甚至可以是根证书。这是因为：
 
 1) 一般叶子证书的有效期都比较短，Google和Baidu官网证书的有效期也就几个月；而App由于是客户端，需要一定的向后兼容，稍疏于检查，今天发布，过两天证书就过期了。
 
 2) 越往证书链的末端，证书越有可能变动；比如叶子证书由特定域名(aaa.bbb.com)改为通配域名(*.bbb.com)等等。短期内的变动，重新部署后，有可能旧版本App更新不及时而出现无法访问的问题。
 
-因此使用CA机构证书是比较合适的，至于哪一级CA机构证书，暂时并没有定论。
+因此使用CA机构证书是比较合适的，至于哪一级CA机构证书，并没有完全的定论，你可以自己评估选择。
 
 
 
@@ -325,7 +327,9 @@ These are the App Transport Security requirements:
 
 ATS要求运行在iOS9的App，需将HTTP连接升级到HTTPS，并且TLS版本不得低于v1.2；而且规定了支持的密码套件(Cipher Suite)和证书签名的哈希算法；如果想要向前兼容的话，可以通过设置Info.plist来降低校验强度，具体可以看这篇文章：[Configuring App Transport Security Exceptions in iOS 9 and OSX 10.11](http://ste.vn/2015/06/10/configuring-app-transport-security-ios-9-osx-10-11/)。
 
-当前日益复杂脆弱的网络难以保证用户的数据安全，因此Apple才在iOS9上强推ATS，反向逼迫服务器升级HTTPS的配置，已提供更安全的网络环境。建议开发者不要简单地将ATS禁用，而应该升级服务器的配置支持ATS，为用户提供更安全的服务。
+本人升级到iOS9 GM版，从App Store上下载了一些并没有完全支持ATS的应用，使用起来也完全没有问题，估计iOS系统对使用低于SDK9编译的App做了兼容，这方面也是符合预期的，毕竟ATS的影响实在太大，基本上没有任何的App能够幸免，比如图片下载一般使用HTTP，而不会使用HTTPS。所以建议可以暂时使用`NSAllowsArbitraryLoads`来取消ATS的限制，后续慢慢完善对ATS的支持。
+
+日益复杂脆弱的网络难以保证用户的数据安全，因此Apple才在iOS9上强推ATS，反向逼迫服务端升级，以提供更安全的网络环境。建议开发者不要简单地将ATS禁用，而应该升级服务器的配置支持ATS，为用户提供更安全的服务。
 
 
 <br/>
@@ -397,8 +401,15 @@ ATS要求运行在iOS9的App，需将HTTP连接升级到HTTPS，并且TLS版本�
 ![Server Hello](/assets/images/2015-09-16/wireshark-ssl-server-hello.png)<br/>
 
 
-3) 服务器同时会将证书发给客户端(No.73帧)；
+3) 服务器同时会将证书发给客户端(No.73帧)；有时候抓取的包只有`Client Hello`和`Server Hello`，而没有再发送证书的，这是SSL/TLS的Session重用了：由于新建立一个SSL/TLS Session的成本太高，所以之前有建立SSL/TLS连接Session的话，客户端会保存Session ID，在下一次请求时在`Client Hello`中带上，服务端验证有效之后，就会成功重用Sesssion。
 
+拓展阅读：
+
+* [RFC5246#Handshake Protocol Overview](https://tools.ietf.org/html/rfc5246#section-7.3)查看Handshake的流程和相关信息。
+* Apple官方开发文档：[TLS Session Cache](https://developer.apple.com/library/ios/qa/qa1727/_index.html)
+* 
+
+<br/>
 4) 客户端确认证书有效，则会生产最后一个随机数(Premaster secret)，并使用证书的公钥RSA加密这个随机数，发回给服务端。为了更高的安全性，会改为[Diffie-Hellman算法](http://zh.wikipedia.org/wiki/迪菲－赫尔曼密钥交换)（简称DH算法）；采用DH算法，最后一个随机数(Premaster secret)是不需要传递的，客户端和服务端交换参数之后就可以算出。`Client Key Exchange`(No. 75帧)；
 
 5) 接下来双方都会发送`Change Cipher Spec`通知对方，接下来的所有消息都会使用签名约定好的密钥进行加密通信。
@@ -407,7 +418,7 @@ ATS要求运行在iOS9的App，需将HTTP连接升级到HTTPS，并且TLS版本�
 
 
 
-相关SSL/TLS接口信息，请查看：[rfc5246](https://tools.ietf.org/html/rfc5246)以及[SSL/TLS in Detail](https://technet.microsoft.com/en-us/library/cc785811(v=ws.10).aspx)
+相关SSL/TLS接口信息，请查看：[RFC5246](https://tools.ietf.org/html/rfc5246)以及[SSL/TLS in Detail](https://technet.microsoft.com/en-us/library/cc785811(v=ws.10).aspx)
 
 
 上面已抓取的HTTPS请求为例，简单介绍了SSL/TLS的握手流程。下面就列举下调试适配ATS过程中遇到的主要问题：
@@ -452,6 +463,18 @@ TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA
 PS：使用Wireshark进行抓包的时候，有时候由于一些HTTPS请求的SSL/TLS版本号太低，Wireshark没办法辨认其是SSL包，而是显示为TCP；此时可以手动来Decode：选择对应的TCP数据帧，右键 -》Decode As -》Transport 选择SSL -》Apply既可。
 
 ![Wireshark Decode](/assets/images/2015-09-16/wireshark-decode-as.png)<br/>
+
+
+
+
+<br/><br/>
+# <a name="summary"></a>5. 后记
+
+这个时代，安全重要么？这是我曾常疑惑的。90%以上的大众对安全没有切实的概念，即使安全上了春晚，过了热潮一切又重归原样。特别最近换工作到保险金融类公司，安全问题更是触目惊心。一直相信，人如同一个圆，你知道的越多，学的越深，接触的越广，圆就越大，越知道自己的渺小，越懂得敬畏。
+
+这世界永远不会缺少矛和盾，没有**“Mission Impossible”**，不是么？
+
+
 
 
 
