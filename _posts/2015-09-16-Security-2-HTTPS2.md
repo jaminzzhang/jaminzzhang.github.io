@@ -1,10 +1,12 @@
 ---
 layout: post
 title: iOS安全系列之二：HTTPS进阶
+category: Security
+tags: [HTTPS, iOS]
 ---
 
 <br/>
-上一篇[《iOS安全系列之一：HTTPS》]({% post_url 2014-10-21-Security-1-HTTPS %})被CocoaChina转载，还顺便上了下头条: [打造安全的App！iOS安全系列之 HTTPS](http://www.cocoachina.com/ios/20150810/12947.html)，高兴之余也有些诚惶诚恐，毕竟那篇文章只是介绍了比较偏应用的初级知识，对于想要深入了解HTTPS的同学来说是远远不够的，刚好本人最近工作上也遇到并解决了一些HTTPS相关的问题，以此为契机，决定写这篇更深入介绍HTTPS的文章。
+上一篇[《iOS安全系列之一：HTTPS》]({% post_url 2014-10-21-Security-1-HTTPS %})被CocoaChina转载，还顺便上了下头条: [打造安全的App！iOS安全系列之 HTTPS](http://www.cocoachina.com/ios/20150810/12947.html)，但那篇文章只是介绍了比较偏应用的初级知识，对于想要深入了解HTTPS的同学来说是远远不够的，刚好本人最近工作上也遇到并解决了一些HTTPS相关的问题，以此为契机，决定写这篇更深入介绍HTTPS的文章。
 
 本文分为以下五节：
 
