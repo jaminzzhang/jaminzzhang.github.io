@@ -79,11 +79,8 @@ pre code {
 
 blockquote {
     display: block;
-    text-align: justify;
+    /*text-align: justify;*/
     border-left: 4px solid #eeeeee;
-}
-
-blockquote {
     margin: 1em 0em;
     padding-left: 1.5em;
 }
@@ -228,7 +225,13 @@ pre, code {
 }
 
 code {
+    display: inline-block;
+    margin: 0 0.2em;
+    padding: 0 0.3em;
     background-color: #f0f0f0;
+    word-wrap: break-word;
+    word-break: break-all;
+
 }
 
 embed, object, iframe {

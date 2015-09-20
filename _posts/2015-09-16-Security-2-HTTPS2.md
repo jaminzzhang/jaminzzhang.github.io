@@ -278,18 +278,19 @@ SSL代理设置，在Locations上可以设置想要进行SSL代理的域名，�
 
 所以还是需要App本地打包证书，使用`SecTrustSetAnchorCertificates(SecTrustRef trust, CFArrayRef anchorCertificates)`来设置Anchor Certificate进行校验。需要注意的是，官方文档[《Certificate, Key, and Trust Services Reference》](https://developer.apple.com/library/mac/documentation/Security/Reference/certifkeytrustservices/#//apple_ref/c/func/SecTrustCopyAnchorCertificates)针对传入的 Anchor Certificates 有说明：
 
-```
-IMPORTANT
-Calling this function without also calling SecTrustSetAnchorCertificatesOnly disables the trusting of any anchors other than the ones specified by this function call.
-```
+>
+>IMPORTANT
+
+>Calling this function without also calling SecTrustSetAnchorCertificatesOnly disables the trusting of any anchors other than the ones specified by this function call.
+
 
 也就是说，单纯调用`SecTrustSetAnchorCertificates`方法后不调用`SecTrustSetAnchorCertificatesOnly`来验证证书，则只会相信`SecTrustSetAnchorCertificates`传入的证书，而不会信任其他锚点证书。关于这一点，`SecTrustSetAnchorCertificatesOnly`方法参数讲解中也有说明：
 
-```
-anchorCertificatesOnly:
 
-If true, disables trusting any anchors other than the ones passed in with the SecTrustSetAnchorCertificates function.  If false, the built-in anchor certificates are also trusted. If SecTrustSetAnchorCertificates is called and SecTrustSetAnchorCertificatesOnly is not called, only the anchors explicitly passed in are trusted.
-```
+>anchorCertificatesOnly:
+
+>If true, disables trusting any anchors other than the ones passed in with the SecTrustSetAnchorCertificates function.  If false, the built-in anchor certificates are also trusted. If SecTrustSetAnchorCertificates is called and SecTrustSetAnchorCertificatesOnly is not called, only the anchors explicitly passed in are trusted.
+
 
 只相信传入的锚点证书，也就只会验证通过由这些锚点证书签发的证书。这样就算被验证的证书是由系统其他信任的锚点证书签发的，也无法验证通过。
 
@@ -309,23 +310,24 @@ If true, disables trusting any anchors other than the ones passed in with the Se
 
 在本文发表的时间（2015-09-03），大部分的iOS开发同学应该升级到iOS9了，在iOS9下进行HTTP/HTTPS请求时会遇到如下错误：
 
-```
-Request failed: Error Domain=NSURLErrorDomain Code=-1022 "The resource could not be loaded because the App Transport Security policy requires the use of a secure connection." UserInfo=0x7fbb4a158f00 {NSUnderlyingError=0x7fbb4a1141c0 "The resource could not be loaded because the App Transport Security policy requires the use of a secure connection.", NSErrorFailingURLStringKey=http://api.xxx.com/mobile, NSErrorFailingURLKey=http://api.xxx.com/mobile, NSLocalizedDescription=The resource could not be loaded because the App Transport Security policy requires the use of a secure connection.}
+>
+>Request failed: Error Domain=NSURLErrorDomain Code=-1022 "The resource could not be loaded because the App Transport Security policy requires the use of a secure connection." UserInfo=0x7fbb4a158f00 {NSUnderlyingError=0x7fbb4a1141c0 "The resource could not be loaded because the App Transport Security policy requires the use of a secure connection.", NSErrorFailingURLStringKey=http://api.xxx.com/mobile, NSErrorFailingURLKey=http://api.xxx.com/mobile, NSLocalizedDescription=The resource could not be loaded because the App Transport Security policy requires the use of a secure connection.}
 
-```
+
 
 
 这是iOS9中一个重大的更新：[App Transport Security](https://developer.apple.com/library/prerelease/ios/technotes/App-Transport-Security-Technote/)，简称ATS。ATS对使用NSURLConnection, CFURL, 或NSURLSession 等 APIs 进行网络请求的行为作了一系列的强制要求，反逼服务器配置，以提高网络数据传输的安全性：
 
 
-```
-These are the App Transport Security requirements:
+>
+>These are the App Transport Security requirements:
+>
+>1) The server must support at least Transport Layer Security (TLS) protocol version 1.2.
 
-1) The server must support at least Transport Layer Security (TLS) protocol version 1.2.
-2) Connection ciphers are limited to those that provide forward secrecy (see the list of ciphers below.)
-3) Certificates must be signed using a SHA256 or better signature hash algorithm, with either a 2048 bit or greater RSA key or a 256 bit or greater Elliptic-Curve (ECC) key. Invalid certificates result in a hard failure and no connection.
+>2) Connection ciphers are limited to those that provide forward secrecy (see the list of ciphers below.)
 
-```
+>3) Certificates must be signed using a SHA256 or better signature hash algorithm, with either a 2048 bit or greater RSA key or a 256 bit or greater Elliptic-Curve (ECC) key. Invalid certificates result in a hard failure and no connection.
+
 
 ATS要求运行在iOS9的App，需将HTTP连接升级到HTTPS，并且TLS版本不得低于v1.2；而且规定了支持的密码套件(Cipher Suite)和证书签名的哈希算法；如果想要向前兼容的话，可以通过设置Info.plist来降低校验强度，具体可以看这篇文章：[Configuring App Transport Security Exceptions in iOS 9 and OSX 10.11](http://ste.vn/2015/06/10/configuring-app-transport-security-ios-9-osx-10-11/)。
 
