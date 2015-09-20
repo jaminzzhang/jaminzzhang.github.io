@@ -329,7 +329,7 @@ SSL代理设置，在Locations上可以设置想要进行SSL代理的域名，�
 >3) Certificates must be signed using a SHA256 or better signature hash algorithm, with either a 2048 bit or greater RSA key or a 256 bit or greater Elliptic-Curve (ECC) key. Invalid certificates result in a hard failure and no connection.
 
 
-ATS要求运行在iOS9的App，需将HTTP连接升级到HTTPS，并且TLS版本不得低于v1.2；而且规定了支持的密码套件(Cipher Suite)和证书签名的哈希算法；如果想要向前兼容的话，可以通过设置Info.plist来降低校验强度，具体可以看这篇文章：[Configuring App Transport Security Exceptions in iOS 9 and OSX 10.11](http://ste.vn/2015/06/10/configuring-app-transport-security-ios-9-osx-10-11/)。
+ATS要求运行在iOS9的App，需将HTTP连接升级到HTTPS，并且TLS版本不得低于v1.2；而且规定了支持的加密套件(Cipher Suite)和证书签名的哈希算法；如果想要向前兼容的话，可以通过设置Info.plist来降低校验强度，具体可以看这篇文章：[Configuring App Transport Security Exceptions in iOS 9 and OSX 10.11](http://ste.vn/2015/06/10/configuring-app-transport-security-ios-9-osx-10-11/)。
 
 本人升级到iOS9 GM版，从App Store上下载了一些并没有完全支持ATS的应用，使用起来也完全没有问题，估计iOS系统对使用低于SDK9编译的App做了兼容，这方面也是符合预期的，毕竟ATS的影响实在太大，基本上没有任何的App能够幸免，比如图片下载一般使用HTTP，而不会使用HTTPS。所以建议可以暂时使用`NSAllowsArbitraryLoads`来取消ATS的限制，后续慢慢完善对ATS的支持。
 
@@ -394,12 +394,12 @@ ATS要求运行在iOS9的App，需将HTTP连接升级到HTTPS，并且TLS版本�
 
 上图是一个标准的HTTPS请求抓取的包：
 
-1) 在TCP三次握手成功之后，客户端发起SSL的`Client Hello`(No.68帧)，传递随机数(Random)，和客户端支持的密码套件(Cipher Suites)、压缩方法、签名算法等信息；
+1) 在TCP三次握手成功之后，客户端发起SSL的`Client Hello`(No.68帧)，传递随机数(Random)，和客户端支持的加密套件(Cipher Suites)、压缩方法、签名算法等信息；
     如下图所示，这是`Client Hello`所携带的信息，可以展开来看相关的详情：
 
 ![Client Hello](/assets/images/2015-09-16/wireshark-ssl-client-hello.png)<br/>
 
-2) 服务器从`Client Hello`中匹配支持的密码套件(Cipher Suites)、压缩算法和签名算法，和服务器新生成的一个随机数返回给客户端，这就是`Server Hello`(No.70帧)。
+2) 服务器从`Client Hello`中匹配支持的加密套件(Cipher Suites)、压缩算法和签名算法，和服务器新生成的一个随机数返回给客户端，这就是`Server Hello`(No.70帧)。
     下图就是对1)中`Client Hello`的回应，由图可以看出，服务端匹配的Cipher Suite是TLS_DHE_RSA_WITH_AES_256_CBC_SHA256：
 
 ![Server Hello](/assets/images/2015-09-16/wireshark-ssl-server-hello.png)<br/>
@@ -420,16 +420,17 @@ ATS要求运行在iOS9的App，需将HTTP连接升级到HTTPS，并且TLS版本�
 6) 最后是双方的`Finished Message`（即`Encrypted Handshake Message`， No. 77、79帧），这个消息是最终的校验，里面包含了握手过程中的Session Key等信息，如果对方能够解密这个消息则表示握手成功，结束整个SSL Handshake流程。
 
 
+掌握了SSL/TLS握手流程之后，调试SSL/TLS就会变得非常简单，只需要看在哪个环节报错(Alert)，就可以基本推断出相关的错误。
 
 相关SSL/TLS接口信息，请查看：[RFC5246](https://tools.ietf.org/html/rfc5246)以及[SSL/TLS in Detail](https://technet.microsoft.com/en-us/library/cc785811.aspx)
 
 
-上面已抓取的HTTPS请求为例，简单介绍了SSL/TLS的握手流程。下面就列举下调试适配ATS过程中遇到的主要问题：
+下面就列举下调试适配ATS过程中遇到的主要问题：
 
 <br/>
-1) 密码套件（Cipher Suite）等参数无法匹配：密码套件不匹配是最常见的握手失败的例子。
+1) 加密套件（Cipher Suite）等参数无法匹配：加密套件不匹配是最常见的握手失败的例子。
 
-在ATS中，可接受的密码套件有包括：
+在ATS中，可接受的加密套件有包括：
 
 ```
 TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384
@@ -445,16 +446,16 @@ TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256
 TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA
 ```
 
-但往往很多服务器的HTTPS配置很久没有升级，没办法支持这些Cipher Suite；客户端发送`Client Hello`给服务端，带上支持密码套件参数；服务端查看这些参数，发现一个都不支持，则直接返回`Handshake Failure`的信息。如下图：
+但往往很多服务器的HTTPS配置很久没有升级，没办法支持这些Cipher Suite；客户端发送`Client Hello`给服务端，带上支持加密套件参数；服务端查看这些参数，发现一个都不支持，则直接返回`Handshake Failure`的信息。如下图：
 
 ![Handshake Failure](/assets/images/2015-09-16/wireshark-handshake-failure1.png)<br/>
 
 
-一般在接受到客户端发送的`Client Hello`后返回`Handshake Failure`，都是因为服务端无法匹配客户端SSL握手参数。至于是不是密码套件这个参数匹配的问题，建议抓取取消ATS了的正常HTTPS请求包进行对比，找出具体不匹配的参数。
+一般在接受到客户端发送的`Client Hello`后返回`Handshake Failure`，都是因为服务端无法匹配客户端SSL握手参数。至于是不是加密套件这个参数匹配的问题，建议抓取取消ATS了的正常HTTPS请求包进行对比，找出具体不匹配的参数。
 
 
 <br/>
-2) SSL/TLS版本过低，这个也非常常见，但一般会被上一个参数不匹配的错误所掩盖。因为大多数SSL/TLS版本低的服务器HTTPS配置支持的密码套件等参数版本也比较低，而SSL/TLS版本是客户端收到`Server Hello`之后才验证的，但前面握手失败就走不到这一步了。所以密码套件（Cipher Suite）等参数无法匹配支持，一般也就意味着服务端SSL/TLS版本过低。
+2) SSL/TLS版本过低，这个也非常常见，但一般会被上一个参数不匹配的错误所掩盖。因为大多数SSL/TLS版本低的服务器HTTPS配置支持的加密套件等参数版本也比较低，而SSL/TLS版本是客户端收到`Server Hello`之后才验证的，但前面握手失败就走不到这一步了。所以加密套件（Cipher Suite）等参数无法匹配支持，一般也就意味着服务端SSL/TLS版本过低。
 
 <br/>
 3) 证书链配置错误：在开发过程中，本人遇到过证书链没有按照顺序进行配置的问题，也遇到过只配置了叶子证书的问题。对于这些问题，可以直接查看SSL握手过程中，服务端返回的`Certificate`包：
