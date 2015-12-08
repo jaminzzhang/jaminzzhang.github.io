@@ -62,7 +62,7 @@ UI之所以叫User Interface，就是因为UI通过视觉上的展示，为用�
 <br/>
 ###1.3 事件响应
 
-UI除了展示信息之外，还需要接收并响应用户的点击、手势、摇晃等事件，经过一系列操作后更新展示信息，展示给用户；正确及时地响应用户的操作并给予反馈，是良好用户体验的保证。为何Android设备普遍给人的感觉比iOS设备要卡，其中一个主要的原因是iOS系统将响应用户事件放在主线程的最高优先级。关于iOS事件响应的机制，会在后续的章节深入讨论。
+UI除了展示信息之外，还需要接收并响应用户的点击、手势、摇晃等事件，经过一系列操作后更新展示信息，展示给用户；正确及时地响应用户的操作并给予反馈，是良好用户体验的保证。为何Android设备普遍给人的感觉比iOS设备要卡，其中一个主要的原因是iOS系统将响应用户事件放在主线程的最高优先级。
 
 <br/>
 ###1.4 UI系统架构
@@ -154,46 +154,14 @@ Offscreen Render为什么卡顿，从上图我们就可以知道，Offscreen Ren
 
 
 <br/>
-##2.2 UIResponser
+##2.3 设计与实践
 
-```
-The UIResponder class defines an interface for objects that respond to and handle events. It is the superclass of UIApplication, UIView and its subclasses (which include UIWindow). Instances of these classes are sometimes referred to as responder objects or, simply, responders.
-```
-
-以上是官方文档对UIResponser的定义，简单的说UIResponser就是响应和处理事件（Touch事件和Motion事件）的基类，本节的主要内容已经说的差不多了。
-
-我们先看看UIResponser的子类们：SKNode（SpriteKit的基础类）、UIApplication、UIView和UIViewController；除了SKNode，其余都是我们非常熟悉的类；
-
-
-<br/>
-![iOS UI Arch](/assets/images/2015-12/UIResponder.jpg)
-
-既然我们对UIResponser的子类都相当熟悉，那么对UIResponser自当有足够的了解，类解析请查看：[UIResponder Class Reference](https://developer.apple.com/library/ios/documentation/UIKit/Reference/UIResponder_Class/#//apple_ref/doc/uid/TP40006783-CH4-SW11)。本节主要是讨论下很多开发者没有完全弄明白的事件传递链（The Responser Chain）。
-
-当触碰屏幕或者是晃动等事件产生，系统将这些事件按时间顺序压入队列，当前在运行的App的UIApplication从事件队列中取出，再进行分发。前面已经说到，事件分为两类：Touch事件和Motion事件（iOS9多了一类：Press物理按钮事件，一般应用于外接设备或者是tvOS上，本节暂不讨论）。这两类事件处理的流程有很大的区别：
-
-<br/>
-###2.2.1 Touch事件
-
-
-
-
-###2.2.1 Motion事件
-
-参考：
-* [Event Delivery: The Responder Chain](https://developer.apple.com/library/ios/documentation/EventHandling/Conceptual/EventHandlingiPhoneOS/event_delivery_responder_chain/event_delivery_responder_chain.html#//apple_ref/doc/uid/TP40009541-CH4-SW2)
+以上几节，对View在开发过程中经常遇到，但并不容易深入理解的概念进行了讨论。接下来，我想脱离View的具体概念，谈谈本人在View设计和开发中的一些实践经验；
 
 
 
 <br/>
-##2.4 设计与实践
-
-以上3节，对View在开发过程中经常遇到，但并不容易深入理解的概念进行了讨论。接下来，我想脱离View的具体概念，谈谈本人在View设计和开发中的一些实践经验；
-
-
-
-<br/>
-###2.4.1 精简扁平的View层次结构
+###2.3.1 精简扁平的View层次结构
 
 复杂的View层次结果不仅会影响渲染效率，而且也会造成代码的臃肿，会造成不可预料的问题并且难以定位；怎么样维护一个精简扁平的View层次结构呢？原则如下：
 
@@ -212,14 +180,14 @@ The UIResponder class defines an interface for objects that respond to and handl
 
 
 <br/>
-###2.4.2 通用控件；
+###2.3.2 通用控件；
 
 每一个程序员都可以建立自己的代码库，同理，每一个移动开发程序员都可以建立自己的通用控件代码库。这个库内的控件，可以是你自己写的，也可以是优秀的第三方开源控件。建立控件库，除了能够避免重新造轮子，大大提高我们的开发效率，还有更为重要的一点：在运用、改造、重构中掌握接口设计解耦，甚至是架构的知识和经验。
 
  每个App的UI设计、交互、布局和配色往往千差万别，但总脱离不出移动App这一范畴，也就决定了在某些通用的控件交互上会保持一致性，以让用户依据自己在移动应用上的使用经验就能轻松快速上手使用，这就是App的移动性。所以通用控件的适用场景往往是很“通用”的。比如下拉刷新、加载更多、Tab Bar、提示Tips、加载错误重新加载等等。在新的App或者功能模块上运用这些控件时，你就会思考怎么让控件更加通用，即不影响老的逻辑，又能够适用新的需求，这对于做界面的架构设计是非常好的锻炼。
 
 <br/>
-###2.4.3  合理运用VC在替代View组合复杂界面；
+###2.3.3  合理运用VC在替代View组合复杂界面；
 
 在界面开发过程中，我们常常会遇到复杂的界面，比如多页界面、多种布局方式展示多业务的首页等，但由于很大部分开发者已经对“一屏就是一个VC”这一初学者的习惯奉为教条，写出一个庞然大View，再加上复杂的逻辑代码，这一块的代码很可能就演变成了谁都不敢动的禁区。一个VC可以管理多个VC，所以合理的使用VC来替代View进行复杂界面组合，不仅能够将复杂界面切分成更小的粒度，逻辑代码也同步合理划分，便于维护和重构；而依托VC的机制，还能View和数据的动态加载管理。
 
