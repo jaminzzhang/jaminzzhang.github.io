@@ -407,6 +407,8 @@ ATS要求运行在iOS9的App，需将HTTP连接升级到HTTPS，并且TLS版本�
 
 3) 服务器同时会将证书发给客户端(No.73帧)；有时候抓取的包只有`Client Hello`和`Server Hello`，而没有再发送证书的，这是SSL/TLS的Session重用了：由于新建立一个SSL/TLS Session的成本太高，所以之前有建立SSL/TLS连接Session的话，客户端会保存Session ID，在下一次请求时在`Client Hello`中带上，服务端验证有效之后，就会成功重用Sesssion。
 
+*注：关于重用TLS Session，在特定场景下会引发严重的问题：当App只针对了代码中发起的HTTPS请求做了本地证书校验，而WebView中发起的HTTPS请求并没有做本地证书校验，可能会出现App内代码发起的请求直接重用WebView中建立的HTTPS链接，导致中间人可以实现短暂的绕过攻击。*
+
 拓展阅读：
 
 * [RFC5246#Handshake Protocol Overview](https://tools.ietf.org/html/rfc5246#section-7.3)查看Handshake的流程和相关信息。
