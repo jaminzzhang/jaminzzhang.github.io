@@ -14,14 +14,11 @@ tags: [UI, iOS, UIView, UIViewController, MVC, MVP, MVVM]
 由于界面涉及到的方面实在过于广泛，本文不可能事无巨细，一一道来，所以本文先立足于点，深入剖析iOS UI系统中不被重视却非常重要的机制，帮助本文读者对iOS的UI系统有整体了解；进而以点带面，拓展到UI逻辑设计和架构设计模式的讨论；最后读文而有所思有所得，设计开发出高效、易用、流畅的UI模块。
 
 本文章节如下：
+
 1. 基础与本质：说明普遍意义上的UI系统的三大模块，让读者从整体上对UI系统有清楚的认识。
-
 2. View：深入View的内部机制，View与Layer之间的关系，以及Offscreen Render；
-
 3. ViewController：讲解ViewController在UI系统中所扮演的角色，以及UI架构设计中ViewController运用和实践；
-
-4. MVC、MVP、MVVM：简单分析三种主流的UI架构设计，讨论本人UI架构上实践及遵循的一般原则；
-
+4. MVC、MVP、MVVM：简单分析三种主流的架构设计模式及其异同，并简单提出了一些做架构设计意见和想法；
 5. 总结。
 
 各章节间没有必然的联系，读者可以选择感兴趣章节阅读。
