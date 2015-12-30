@@ -164,9 +164,9 @@ Offscreen Render为什么卡顿，从上图我们就可以知道，Offscreen Ren
 
 1) 尽量使用系统原生的控件；
 
-如实现一个icon跟title上下布局的按钮，很多人习惯是使用一个view包含了一个UIButton和一个UILabel。实际上更为推荐的方式是调整UIButon的contentInset/titleInset/imageInset三个参数来达到这个效果，非常简单，并且上面title有UIButton上的展示方式和特性；
+如实现一个icon跟title上下布局的按钮，很多人习惯是使用一个view包含了一个UIButton和一个UILabel。实际上更为推荐的方式是调整UIButon的contentInset/titleInset/imageInset三个参数来达到这个效果，非常简单，并且title有UIButton上的展示方式和特性，如可以设置高亮颜色等；
 
-又比如一个有着负责一点布局结构的滚动界面，有些开发者会觉得使用UITableView/UICollectionView实现会比较复杂，有些效果可能没办法达到，就用他们的基类UIScrollView来实现，自己造了一大套的轮子，代码可能也变得非常复杂；实际上根据我的经验，通过重写或者是内部属性的调整是完全可以使用UITableView/UICollectionView来达到这个效果，毕竟UITableView/UICollectionView是UIScrollView的子类，功能不会减少，而会更加强大，并且我们还能利用已有的data source和delegate机制，实现设计上的解耦。
+又比如一个有着复杂一点布局结构的滚动界面，有些开发者会觉得使用UITableView/UICollectionView实现会比较复杂，有些效果可能没办法达到，就用他们的基类UIScrollView来实现，自己造了一大套的轮子，代码可能也变得非常复杂；实际上根据我的经验，通过重写或者是内部属性的调整是完全可以使用UITableView/UICollectionView来达到这个效果，毕竟UITableView/UICollectionView是UIScrollView的子类，功能不会减少，而会更加强大，并且我们还能利用已有的data source和delegate机制，实现设计上的解耦。
 
 其他常见的还有UINavigationBar、UITabBar、UIToolBar等等；
 
@@ -179,9 +179,9 @@ Offscreen Render为什么卡顿，从上图我们就可以知道，Offscreen Ren
 <br/>
 ###2.3.2 通用控件；
 
-每一个程序员都可以建立自己的代码库，同理，每一个移动开发程序员都可以建立自己的通用控件代码库。这个库内的控件，可以是你自己写的，也可以是优秀的第三方开源控件。建立控件库，除了能够避免重新造轮子，大大提高我们的开发效率，还有更为重要的一点：在运用、改造、重构中掌握接口设计解耦，甚至是架构的知识和经验。
+每一个程序员都可以建立自己的代码库，同理，每一位移动开发程序员都可以建立自己的通用控件代码库。这个库内的控件，可以是你自己写的，也可以是优秀的第三方开源控件。建立控件库，除了能够避免重新造轮子，大大提高我们的开发效率，还有更为重要的一点：在运用、改造、重构中掌握接口设计解耦，甚至是架构的知识和经验。
 
- 每个App的UI设计、交互、布局和配色往往千差万别，但总脱离不出移动App这一范畴，也就决定了在某些通用的控件交互上会保持一致性，以让用户依据自己在移动应用上的使用经验就能轻松快速上手使用，这就是App的移动性。所以通用控件的适用场景往往是很“通用”的。比如下拉刷新、加载更多、Tab Bar、提示Tips、加载错误重新加载等等。在新的App或者功能模块上运用这些控件时，你就会思考怎么让控件更加通用，即不影响老的逻辑，又能够适用新的需求，这对于做界面的架构设计是非常好的锻炼。
+每个App的UI设计、交互、布局和配色往往千差万别，但总脱离不出移动App这一范畴，也就决定了在某些通用的控件交互上会保持一致性，以让用户依据自己在移动应用上的使用经验就能轻松快速上手使用，这就是App的移动性。所以通用控件的适用场景往往是很“通用”的。比如下拉刷新、加载更多、Tab Bar、提示Tips、加载错误重新加载等等。在新的App或者功能模块上运用这些控件时，你就会思考怎么让控件更加通用，即不影响旧的逻辑，又能够适用新的需求，这对于做界面的架构设计是非常好的锻炼。
 
 <br/>
 ###2.3.3  合理运用VC在替代View组合复杂界面；
@@ -210,7 +210,7 @@ ViewController在iOS只是一个非常重要的概念，它是我们在开发界
 
 5) Adaptivity：适配不同的屏幕尺寸空间的变化；
 
-可以看到，ViewController有太多的事情要做，这也就导致了ViewController非常容易变得代码膨胀、逻辑混乱等问题；依照我个人的经验，一个ViewController类的有效代码超过500行，这个ViewController就会变得难以维护，但实际上在开发过程中，往往会遇到上1K行，甚至2~3K行的ViewController类；当一个ViewController类达到2~3K行，就意味着其他开发者接手这个模块来修改东西，已经无法通过滚动来定位代码，只能通过搜索；
+可以看到，ViewController有太多的事情要做，这也就导致了ViewController非常容易变得代码膨胀、逻辑混乱等问题；依照个人经验，一个ViewController类的有效代码超过500行，这个ViewController就会变得难以维护，但实际上在开发过程中，往往会遇到上1K行，甚至2~3K行的ViewController类；当一个ViewController类达到2~3K行，就意味着其他开发者接手这个模块来修改东西，已经无法通过滚动来定位代码，只能通过搜索；
 
 所以，在进行界面开发时，ViewController需要特别注意模块设计，将不同的模块按照逻辑进行一定的拆分，即解耦，又防止ViewController模块的代码膨胀。这就是轻VC的理念；
 
@@ -218,7 +218,7 @@ ViewController在iOS只是一个非常重要的概念，它是我们在开发界
 <br/>
 ##3.1 轻VC
 
-轻VC是前两年非常火的名词，现在似乎已经成为了一种业界规范或者是惯例。以我的经验来看，一个VC的类，如果有效代码超过了500行，则表示这个类看是变得臃肿而难以维护；到达800行，基本上没办法通过滚动来定位代码，只能通过搜索，此时重构已势在必行；
+轻VC是前两年非常火的名词，现在似乎已经成为了一种业界规范或者是惯例。同上所述，一个VC的类，如果有效代码超过了500行，则表示这个类看是变得臃肿而难以维护；到达800行，只能通过搜索来定位代码时，重构已势在必行；
 
 关于轻VC，objc.io的开篇第一章[#Issue 1 : Lighter View Controllers](https://www.objc.io/issues/1-view-controllers/)，足见这一理念的重要性。掌握轻VC的理念基本上是一个iOS开发者从初级迈向高级必备技能。[#Issue 1 : Lighter View Controllers](https://www.objc.io/issues/1-view-controllers/) 文中介绍了构建轻VC几种常见的方式：
 
@@ -256,7 +256,7 @@ ViewController在iOS只是一个非常重要的概念，它是我们在开发界
 
 1) **Root ViewController**，是整个App内Window的根VC，这是一个生命周期与App相同的VC，即Window的RootViewController是唯一且一直存在的，需要切换场景则使用这个Root VC控制子VC切换来实现（常见于场景：需要进行强登录，即登录之后才能使用的App，登录成功后从登录界面切换到主界面，则登录VC和主界面VC都应该是Root VC的子VC，受Root VC的控制来进行切换）。这个RootViewController建议是一个UINavigationController，以此保证足够扩展性，并提供更为丰富的界面交互选择。这个Root VC的生命周期与App一致，这样一些突发的灵活分支界面可以很好的展示在Root VC上，如全局的Loading提示、OpenURL的分支调整等；
 
-2) **Main ViewController**：主界面，是主要业务展示界面的根界面。该VC与RootVC功能上会很容易重合在一起，但需要注意的是，该VC并非一直存在，但切换到一些特定分支时，该VC会从Root VC上remove掉，比如前面所说的强登录App，登录界面与主界面就会需要进行切换。另外，该VC隔离了主要业务展示界面的VC与Root VC，便于App整体界面风格的改版和重构。比如现在上图展示的是一个侧滑抽屉+TabBar的组合，那到下个版本改版把侧滑抽屉去掉，那么只需要使用TabBar替换到DrawerMenu VC在Main VC中的位置即可，而不会影响到RootVC中其他分支展示出来的界面（如Push等）。
+2) **Main ViewController**：主界面，是主要业务展示界面的根界面。该VC与RootVC功能上会很容易重合在一起，但需要注意的是，该VC并非一直存在，但切换到一些特定分支时，该VC会从Root VC上remove掉，比如前面所说的强登录App，登录界面与主界面就会需要进行切换。另外，该VC隔离了主要业务展示界面的VC与Root VC，便于App整体界面风格的改版和重构。比如现在上图展示的是一个侧滑抽屉+TabBar的组合，那到下个版本改版把侧滑抽屉去掉，那么只需要使用TabBar替换DrawerMenu VC在Main VC中的位置即可，而不会影响到RootVC中其他分支展示出来的界面（如Push等）。
 
 3) **TabBarItem ViewController**：作为TabBar Controller的子Item VC，通常会设计为NavigationController，用以管理各TabBarItem内的VC栈。
 注：如果需要在Push进入二级界面（Detail VC）时隐藏TabBar，只需要设置二级VC的```hidesBottomBarWhenPushed = true```即可，如果想更加灵活的控制TabBar，例如进到三级页面的时候显示出TabBar（这个场景应该很少见），或者你的TabBar是自定义的，可以参考我写的一个开源控件[MZNavTab](https://github.com/jaminzzhang/MZNavTab)；
