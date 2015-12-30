@@ -346,12 +346,12 @@ Communication: User actions in the view layer that create or modify data are com
 虽然Apple的官方文档是定义Model **Objects**，但它的含义还是封装数据以及管理数据相关的逻辑计算；
 
 
-所以这里需要明确的一个概念是：在MVC的设计模式中，Model是一个Layer，而不只是一个数据模型（Data Model）类。总体来说，Model Layer 包含了数据模型，以及管理这些数据相关的逻辑计算，如本地数据变化、数据缓存、从网络请求数据等业务逻辑。关于这个问题，还可以参考这篇文章：《[iOS应用架构谈 view层的组织和调用方案](http://www.infoq.com/cn/articles/ios-app-arch-2-2)》。但有一点需要说明：该文章更倾向于从Model Object上思考Model的定义，因为里面的关于Model的示例是从数据模型中扩展出业务接口；而本人则更倾向于从Model Layer来思考Model，即Model并不限于数据模型，可以是数据管理类（各种Manager）、请求队列管理等等。
+所以这里需要明确的一个概念是：在MVC的设计模式中，Model是一个Layer，而不只是一个数据模型（Data Model）类。总体来说，Model Layer 包含了数据模型，以及管理这些数据相关的逻辑计算，如本地数据变化、数据缓存、从网络请求数据等业务逻辑。关于这个问题，还可以参考这篇文章：《[iOS应用架构谈 view层的组织和调用方案](http://casatwy.com/iosying-yong-jia-gou-tan-viewceng-de-zu-zhi-he-diao-yong-fang-an.html)》。但有一点需要说明：该文章更倾向于从Model Object上思考Model的定义，因为里面的关于Model的示例是从数据模型中扩展出业务接口；而本人则更倾向于从Model Layer来思考Model，即Model并不限于数据模型，可以是数据管理类（各种Manager）、请求队列管理等等。
 
 <br/>
 ##4.3 MVP VS MVVM
 
-上一节关于Model Layer中推荐的文章《[iOS应用架构谈 view层的组织和调用方案](http://www.infoq.com/cn/articles/ios-app-arch-2-2)》对MVC和MVVM都做了非常详细的讨论，是一篇非常不错的文章，推荐各位阅读，那么本节就来说说MVP，以及我为什么更倾向于选择MVP作为App架构设计中的设计框架。
+上一节关于Model Layer中推荐的文章《[iOS应用架构谈 view层的组织和调用方案](http://casatwy.com/iosying-yong-jia-gou-tan-viewceng-de-zu-zhi-he-diao-yong-fang-an.html)》对MVC和MVVM都做了非常详细的讨论，是一篇非常不错的文章，推荐各位阅读，那么本节就来说说MVP，以及我为什么更倾向于选择MVP作为App架构设计中的设计框架。
 
 回顾下在本章一开始祭出的MVP以及MVVM两张图，两者之间有什么不同？
 
@@ -370,7 +370,7 @@ MVVM的VM(View Model)到V(View)，比MVP的P(Presenter)到V(View)，多了数据
 无论MVC、MVP还是MVVM，都是指导我们进行架构设计的模式，并非可以生搬硬套的；而且在实际的应用中，对于这些设计模式总会有不同的理解，并且需要根据项目需求进行必要的调整；更为重要的是在我们App的架构设计中，处理好Model-View-Controller之间的关系只是基础，最主要的挑战来自于复杂的业务逻辑和场景，这才是体现一个架构师能力所在。
 
 
-唐巧前不久写的一篇文章《[被误解的MVC和被神化的MVVM](http://www.infoq.com/cn/articles/rethinking-mvc-mvvm?utm_campaign=infoq_content&)》对MVC和MVVM的实践的讨论应该是体现了现在移动端主流架构思想，其中对```网络请求层、ViewModel 层、Service 层、Storage 层等其它类```的提取设计，才决定了一个App架构设计的优劣。
+唐巧前不久写的一篇文章《[被误解的MVC和被神化的MVVM](http://blog.devtang.com/blog/2015/11/02/mvc-and-mvvm/)》对MVC和MVVM的实践的讨论应该是体现了现在移动端主流架构思想，其中对```网络请求层、ViewModel 层、Service 层、Storage 层等其它类```的提取设计，才决定了一个App架构设计的优劣。
 
 
 对于架构设计，我准备在下一篇文章，结合本人在iOS/Android两端的设计经验，做个深入的讨论，并给出自己的设计范例，供各位讨论参考。这里先抛出几个在架构设计中最常思考的点，作为下一篇文章的引子：
@@ -404,8 +404,8 @@ MVVM的VM(View Model)到V(View)，比MVP的P(Presenter)到V(View)，多了数据
 * [#Objc 1 : Lighter View Controllers](https://www.objc.io/issues/1-view-controllers/)
 
 
-* [被误解的MVC和被神化的MVVM](http://www.infoq.com/cn/articles/rethinking-mvc-mvvm?utm_campaign=infoq_content&)
-* [iOS应用架构谈 view层的组织和调用方案](http://www.infoq.com/cn/articles/ios-app-arch-2-2)
+* [被误解的MVC和被神化的MVVM](http://blog.devtang.com/blog/2015/11/02/mvc-and-mvvm/)
+* [iOS应用架构谈 view层的组织和调用方案](http://casatwy.com/iosying-yong-jia-gou-tan-viewceng-de-zu-zhi-he-diao-yong-fang-an.html)
 
 
 
