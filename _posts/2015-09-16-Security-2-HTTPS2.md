@@ -25,7 +25,7 @@ tags: [HTTPS, iOS]
 关于HTTPS，我经常会提到的就是中间人攻击，那究竟什么是中间人攻击呢？中间人攻击，即所谓的[Man-in-the-middle attack(MITM)](https://en.wikipedia.org/wiki/Man-in-the-middle_attack)，顾名思义，就是攻击者插入到原本直接通信的双方，让双方以为还在直接跟对方通讯，但实际上双方的通信对方已变成了中间人，信息已经是被中间人获取或篡改。
 
 <br/>
-![MITM](http://s017.radikal.ru/i435/1201/07/2df312b053cf.gif)
+![MITM](/assets/images/2015-09-16/man_in_the_middle.png)
 <br/>
 
 当然，本文并不是科普性文章，本节就针对HTTPS攻击，特别是HTTPS在App这一应用场景下的常见的攻击手段进行分析讨论。
