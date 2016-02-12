@@ -2,7 +2,8 @@ markdown: rdiscount
 permalink: /:year/:month/:day/:title/
 url: http://jaminzzhang.github.com
 author: jaminzzhang
-pygments: true
+highlighter: pygments
+gems: [jekyll-paginate]
 safe: true
 paginate: 16
 auto: true
