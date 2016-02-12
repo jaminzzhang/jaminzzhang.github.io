@@ -160,14 +160,14 @@ embed, object, iframe {
 .header-title {
 	padding-left: 6.25%;
 	font-size: 21px;
-	font-weight: bold;
+	font-weight: normal;
 	line-height: 80px;
 	color: #c9ced1;
 }
 
 
 .header-title .thin {
-	font-weight: normal;
+	font-weight: lighter;
 }
 
 .nav {
@@ -180,6 +180,7 @@ embed, object, iframe {
 	display: table-cell;
 	float: right;
 	padding: 0 18px;
+	/*font-size: 18px;*/
 	font-weight: 500;
 	line-height: 80px;
 	color: #343434;
@@ -188,8 +189,12 @@ embed, object, iframe {
 	cursor: pointer;
 }
 .nav-item:hover {
-	font-weight: 500;
-	line-height: 80px;
+	/*font-weight: 500;*/
+	/*line-height: 80px;*/
+	color: #ff4b23;
+}
+
+.nav-item .active {
 	color: #ff4b23;
 }
 
@@ -226,6 +231,10 @@ embed, object, iframe {
     margin-bottom: 1em;
 }
 
+#tag_cloud a {
+    margin-right: 1em;
+}
+
 #tag_cloud a:hover {
     color: #333333 !important;
     text-decoration: none;
@@ -243,8 +252,12 @@ embed, object, iframe {
 .listing-seperator {
 	/*padding-top: 20px;*/
 	padding-bottom: 5px;
-	font-size: 24px;
+	font-size: 21px;
 	line-height: 32px;
+}
+
+.listing-item {
+	padding: .2em 0;
 }
 
 .listing-item a{
@@ -489,5 +502,16 @@ footer a:hover {
 		color: #3d4245;
 	}
 
+	.listing-item {
+		padding: 0.4em 0;
+	}
+
+	.listing-item a{
+		padding-left: 0;
+	}
+
+	.listing-item time {
+		display: none;
+	}
 }
 

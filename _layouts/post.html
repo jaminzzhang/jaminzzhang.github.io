@@ -2,6 +2,7 @@
 layout: default
 ---
 
+<hr>
 <section class="post">
 {{ content }}
 </section>
@@ -37,7 +38,7 @@ layout: default
 <br />
 {% if page.tags %}
 <span class="tags">
-  tagged with 
+  Tagged with 
   {% for tag in page.tags %}
   <a href="/tags/#{{ tag }}" title="{{ tag }}">{{ tag }}</a>&nbsp;
   {% endfor %}
