@@ -273,6 +273,25 @@ a:hover.back-to-top {
     box-shadow: #999 1px 1px 4px;
 }
 
+
+.post-title h1 {
+	color: #dd0000;
+	margin-top: 20px;
+	/*line-height: 32px;*/
+	font-weight: normal;
+	text-align: center;
+}
+
+.post-title p {
+	/*right: 0px;*/
+	margin: auto;
+	padding: 0;
+	color: #999999;
+	font-size: 13px;
+	line-height: 14px;
+	text-align: right;
+}
+
 #tag_cloud {
     margin-bottom: 1em;
 }

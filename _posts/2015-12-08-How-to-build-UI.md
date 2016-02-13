@@ -323,7 +323,7 @@ MVC从施乐帕克实验室提出至今，已经应用到各种应用开发领�
 The central component of MVC, the model, captures the behavior of the application in terms of its problem domain, independent of the user interface.[11] The model directly manages the data, logic and rules of the application.
 ```
 
-**MSDN(https://msdn.microsoft.com/en-us/library/ff649643.aspx)中的定义**：
+**[MSDN](https://msdn.microsoft.com/en-us/library/ff649643.aspx)中的定义**：
 
 ```
 Model. The model manages the behavior and data of the application domain, responds to requests for information about its state (usually from the view), and responds to instructions to change state (usually from the controller).
