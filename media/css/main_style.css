@@ -167,6 +167,7 @@ embed, object, iframe {
 
 
 .header-title .thin {
+	padding-left: 12px;
 	font-weight: lighter;
 }
 
@@ -206,6 +207,51 @@ embed, object, iframe {
 	visibility: hidden;
 }
 
+/*
+.backtotop {
+    position: fixed;
+    bottom: 113px;
+    left: 50%;
+    z-index: 19;
+    margin-left: 230px;
+}
+*/
+
+
+a.back-to-top {
+	display: none;
+	width: 36px;
+	height: 36px;
+	text-indent: -9999px;
+	position: fixed;
+	z-index: 999;
+	right: 5%;
+	bottom: 36px;
+	background: #e2e2e2 no-repeat center 43%;
+	opacity: 0.8;
+	background-image: url("up_arrow.png") no-repeat;
+	background-size: 32px 32px;
+	-webkit-border-radius: 6px;
+	-moz-border-radius: 6px;
+	border-radius: 6px;
+}
+
+a:hover.back-to-top {
+	background-color: #cccccc;
+}
+
+
+/* @2x Images (Pixel Ratio of 1.25+) */
+@media only screen and (-o-min-device-pixel-ratio: 5/4),
+       only screen and (-webkit-min-device-pixel-ratio: 1.25),
+       only screen and (min--moz-device-pixel-ratio: 1.25),
+       only screen and (min-device-pixel-ratio: 1.25),
+       only screen and (min-resolution: 1.25dppx) {
+    a.back-to-top {
+    	background-image:url(up_arrow_2x.png);
+    	background-size: 32px 32px;
+    }
+}
 
 .content {
     font-size: 15px;
