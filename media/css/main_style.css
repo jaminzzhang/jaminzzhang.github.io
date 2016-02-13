@@ -88,17 +88,6 @@ h4 {
 }
 
 
-pre code {
-    margin: 1em 0;
-    font-size: 14px;
-    line-height: 1.6;
-    display: block;
-    overflow: auto;
-    /*word-break: break-all;*/
-	word-wrap: normal;
-
-}
-
 blockquote {
     display: block;
     /*text-align: justify;*/
@@ -119,8 +108,9 @@ pre code {
     display: block;
     overflow: auto;
     /* word-break: break-all; */
-    word-wrap: normal;
+    /*word-wrap: normal;*/
 }
+
 code {
     display: inline-block;
     margin: 0 0.2em;
