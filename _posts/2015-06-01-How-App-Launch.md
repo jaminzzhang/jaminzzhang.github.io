@@ -23,7 +23,7 @@ title: 由App的启动说起
 <br/>
 <br/>
 
-#1. App文件的组成
+# 1. App文件的组成
 ---
 
 在详细研究启动流程之前，首先我们需要了解下iOS/OSX的App执行文件
@@ -49,7 +49,7 @@ OS X应用和iOS应用两者的bundle结构有些许差别，OS X的应用程序
 
 
 <br/>
-##1.1 Universal Binary
+## 1.1 Universal Binary
 
 大部分情况下，xxx.app/xxx文件并不是Mach-O格式文件，由于现在需要支持不同CPU架构的iOS设备，所以我们编译打包出来的执行文件是一个Universal Binary格式文件（通用二进制文件，也称胖二进制文件），其实Universal Binary只不过将支持不同架构的Mach-O打包在一起，再在文件起始位置加上Fat Header来说明所包含的Mach-O文件支持的架构和偏移地址信息；
 
@@ -98,8 +98,8 @@ ps：上述说“大部分情况”是因为还有一部分，由于业务比较
 ps:QQ V5.5.1版本单个Mach-O文件大小为51M
 
 
-</br>
-##1.2 [Mach-O](https://developer.apple.com/library/mac/documentation/DeveloperTools/Conceptual/MachORuntime/index.html#//apple_ref/doc/uid/TP40000895)
+<br/>
+## 1.2 [Mach-O](https://developer.apple.com/library/mac/documentation/DeveloperTools/Conceptual/MachORuntime/index.html#//apple_ref/doc/uid/TP40000895)
 
 
 虽然iOS/OS X采用了类UNIX的Darwin操作系统核心，完全符合UNIX标准系统，但在执行文件上，却没有支持UNIX的ELF，而是维护了一个独有的二进制可执行文件格式：Mach-Object（简写Mach-O）。Mach-O是NeXTSTEP的遗产，其文件格式如下：
@@ -173,14 +173,14 @@ OS X/iOS发展到今天，已经有40多条加载命令，其中部分是由内�
 
 
 <br/><br/>
-#2. 内核Kernel
+# 2. 内核Kernel
 ---
 
 了解了App执行文件之后，我们从源码来看看，App经过了什么样的内核调用流程之后，来到了主程序入口main()。
 
 
 <br/>
-##2.1 [XNU开源代码](http://opensource.apple.com/tarballs/xnu/)
+## 2.1 [XNU开源代码](http://opensource.apple.com/tarballs/xnu/)
 
 
 虽然内核XNU是开源的，但只限于OS X, iOS的XNU内核一直是封闭的，但从历史角度来说，iOS是OS X的分支，两者比较大的区别就是支持的目标架构不一样（iOS目标架构为ARM，而不是OS X的Intel i386和x86_64），内存管理以及系统安全限制；而执行文件都是Mach-O。所以，本文预设两者在App启动执行这方面并没有太大差别。
@@ -191,7 +191,7 @@ OS X/iOS发展到今天，已经有40多条加载命令，其中部分是由内�
 
 
 <br/>
-##2.2 内核调用流程
+## 2.2 内核调用流程
 
 
 可执行文件的内核流程如下图：
@@ -292,7 +292,7 @@ execve(proc_t p, struct execve_args *uap, int32_t *retval)
 
 
 <br/>
-##2.3 加载并解析Mach-O文件
+## 2.3 加载并解析Mach-O文件
 
 
 前一节描述了可执行文件的执行流程，本节探讨下，内核是如何加载解析Mach-O文件的。
@@ -580,7 +580,7 @@ load_dylinker(
 <br/>
 <br/>
 
-#3. 总结
+# 3. 总结
 ---
 
 之前对App流程有个大体的概念，但于细节并不甚清楚，耗时1个多月，边学边复习边写文章，终于在出行旅游前完成。原计划是准备在第三段讲解下动态链接器dyld加载共享库的流程的，但限于本文篇幅实在太长，所以新起一篇文章来写会好一点。

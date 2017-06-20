@@ -12,32 +12,31 @@ title: iOS到Android到底有多远
 <br/>
 <br/>
 
-===
-<br/>
 
-#1 语言
+
+# 1 语言
 
 从iOS到Android开发，首先遇到的难题就是编程语言的改变，由于在大学时，跟着实验室老师做项目就是用Java写J2EE，所以Java的基础知识还记得，简单看看代码基本就上手了。
 
 编程语言的争论对比由来已久，本文并不想引发月经般的口水战，没有全能的语言，只能说在不同语言有不同的适应场景。作为比Java早生整整13年的Objective-C（Objective-C: 1982, Java: 1995，来源于Wiki），整体上来说，在语言特性方面落后于Java太多，那么多年才发展到版本2，而Java已然来到了版本9。从iOS到Android，对比Objective-C和Java，更深刻理解Objective-C语言的局限性：
 
 <br/>
-##1.1 泛型
+## 1.1 泛型
 
 泛型是现代编程语言非常重要而有用的特性，能够提高代码复用率，并约束参数类型提高安全性。泛型是一个非常强大特性，以至于有泛型编程这以课题。可惜Obective-C直到前不久的iOS9发布，才更新对Collection类型支持泛型(官方文档并没有太多的说明泛型，自建类也是可以模仿Collection的泛型来实现泛型的支持，但支持得并不太理想)；
 
 <br/>
-##1.2 枚举
+## 1.2 枚举
 
 Objective-C是C的超集，完全兼容C语言，所以其枚举还一直沿用着C语言的枚举，但现有的面向对象的高级语言，已经将枚举从一个基本数据类型升级为类，这大大增强了枚举的扩展性。如OC的枚举只能是整型类型，如果需要获得枚举对应的数据（如枚举的名称），只能自己添加映射的代码；但Java的枚举，可以扩展出字段name，来对应枚举的名称；
 
 <br/>
-##1.3 抽象abstract
+## 1.3 抽象abstract
 
 抽象类和抽象方法是OOP中重要的概念，而OC一直没有支持该特性，这对于面向对象的抽象封装是非常大的限制。
 
 <br/>
-##1.4 方法访问控制
+## 1.4 方法访问控制
 
 OC无法使用public/private/protected/final等关键字来控制方法的访问权限。这其实是由OC是动态语言所决定的。从根本上来说，OC是不存在private方法的，因为所有的方法都可以用performSelector来进行访问，当然Java也可以通过反射实现类似的功能，所以从安全性上来说是基本一致的，不同的只是模块封装。
 
@@ -48,7 +47,7 @@ OC无法使用public/private/protected/final等关键字来控制方法的访问
 
 
 <br/><br/>
-#2 系统平台
+# 2 系统平台
 
 不管是Windows、iOS、Android还是Blackberry，做应用开发都只能依托于这些系统平台，能做的不能做的，都由平台决定。这既是开发者的福利，也是开发者的悲哀。福利是因为有个完善的平台，开发者能够很容易就能够实现一些复杂的功能，如GPS、陀螺仪、图片处理等；说是悲哀，是开发者已经限定在这个平台的圈子内，就像人的生死，平台已有生死，当一个平台灭亡时，往往有一大批的开发者要么一起死亡，要么面临转型。所以，优秀的开发者都不应该禁锢在某个平台上，多去思考和学习与平台不相关的技术思想。iOS/Android有一天也会像Smbian一样死去，但多线程、算法、内存管理、网络、设计模式这些思想不会死去；也许OpenGL/OpenCV等也会死去，但图形算法不会；就像今天Objective-C正慢慢被Swift取代，但Cocoa库还是在传承。
 
@@ -57,7 +56,7 @@ OC无法使用public/private/protected/final等关键字来控制方法的访问
 
 
 <br/>
-##2.1 [Context](https://developer.android.com/reference/android/content/Context.html)
+## 2.1 [Context](https://developer.android.com/reference/android/content/Context.html)
 
 在开发Android应用过程中，你会发现，不管是第三方库还是系统的API，基本都会有Context做为初始化的参数，或者是传递参数：如`public TextView(Context context)`、 ` SQLiteOpenHelper(Context context, String name, CursorFactory factory, int version)` 等；
 
@@ -74,7 +73,7 @@ Context，故名思议，就是程序的上下文，在Android开发中，主要
 
 
 <br/>
-##2.2 [Activity](http://developer.android.com/guide/components/activities.html)
+## 2.2 [Activity](http://developer.android.com/guide/components/activities.html)
 
 Activity就相当于iOS的ViewController，用法也基本上大同小异，上一节（Context）也介绍了Activity是继承自Context。与iOS的ViewController的差异，主要有以下几点：
 
@@ -83,7 +82,7 @@ Activity就相当于iOS的ViewController，用法也基本上大同小异，上�
 2）UIViewController可以嵌套多个UIViewController，但Activity一般不能嵌套多个Activity。说一般，是因为之前Android有个`ActivityGroup`的组件，可以实现嵌套。但该组件在API level 13 已被废弃。现在一般使用 Fragment 实现不同界面组合嵌套。
 
 <br/>
-##2.3 [Intent](http://developer.android.com/intl/zh-cn/guide/components/intents-filters.html)
+## 2.3 [Intent](http://developer.android.com/intl/zh-cn/guide/components/intents-filters.html)
 
 Intent，官方文档的描述： an abstract description of an operation to be performed。是用来向其他App组件请求操作的消息对象。简单的来说，Intent就是封装数据和Action的消息体。主要用于：
 
@@ -98,20 +97,20 @@ Intent，官方文档的描述： an abstract description of an operation to be 
 另外，Intent一般使用Extras来传递Action所需要的附加信息数据，而Extras中的数据类型只能是基础数据类型、字符串和序列化(Serializable/Parcelable)数据，而不支持其他对象数据直接传递，主要原因是Intent不只是为用于进程内的传递，也支持跨进程传递，所以无法直接传递对象。如果需要传递对象数据，就需要让对象的类实现(Serializable/Parcelable)序列化接口，由于Serializable序列化性能较低，推荐使用Parcelable。但由于Java是自动支持Serializable，所以实现Serializable非常方便，只需要在类中声明实现Serializable接口就可以了；而Parcelable就要复杂多了。希望Android能够改进这一点。
 
 <br/>
-##2.4 其他 
+## 2.4 其他 
 
 当然，两个平台设计上有较大差异的地方绝对不止上述几处，本文只简叙了常用的几种场景，更多差异对比，等待你深入挖掘体会。
 
 
 <br/><br/>
-#3 架构
+# 3 架构
 
 所幸的是，我在开发出了iOS版应用之后开发Android版的，所以架构基本上可以直接沿用，只需要针对相应的语言特性做一些调整。现有的移动应用，基本都是从典型的MVC架构上来衍生或者演变，无论在iOS流行的MVVM还是Andorid上流行的MVP，本质上没有太大的差别，而(MV)VM与(MV)P相比，更倾向于数据绑定而已。
 
 架构，其实就是对软件整体结构和组件的抽象，最终的目的，都是通过解耦来实现软件的健壮性、扩展性和可维护性等。虽架构设计是脱离语言的结构抽象，但实现架构设计还是要依赖于平台，最终落实到语言实现；
 
 <br/>
-##3.1 架构范式（architectural pattern）：
+## 3.1 架构范式（architectural pattern）：
 
 前面已经说了，无论iOS还是Android，MVC都是这两个平台应用的基本架构设计范式，以下两张图可以说明一切：
 
@@ -129,7 +128,7 @@ Android的MVC
 
 
 <br/>
-##3.2 接口
+## 3.2 接口
 
 两个平台基本没有太大的差别，由于Android支持泛型和抽象类，所以Android的接口设计会比较灵活。这种灵活性，只有深入使用体验才会有深的体会，这里不深入讲解。但架构设计中，往往会忽略的就是接口的规范性和一致性。将接口进行统一的规范，会让整个架构实现变得非常一致，团队的每一个人只要了解了一个模块的架构设计，就基本了解了全局架构计。这主要体现在：
 
@@ -138,7 +137,7 @@ Android的MVC
 
 
 <br/>
-##3.3 回调
+## 3.3 回调
 
 回调其实也属于接口设计，由于平台上的差异，iOS的回调多使用委托(delegate)和Block，如：
 
@@ -200,7 +199,7 @@ public void callBack(WQBasicListener<String> listener) {
 Block与匿名类，两者非常相似，同属于闭包（closures）的概念，都是传递代码块给被调用者进行回调；区别是：Block更为简单易用，而匿名类则作为类对象来传递，可以进行泛化和封装等，更为强大。
 
 <br/>
-##3.4 多线程
+## 3.4 多线程
 
 我们为什么要用多线程？这是非常简单的问题，但非常多的开发同学其实都无法正确回答。对于一个应用进程来讲，资源其实是限定的，那把任务放在一个线程中串行执行，与切分成几个任务再一个一个去执行有什么区别呢？其实，对于限定的资源来说，多线程：一、合理规划调度任务；简单的来说，就是可以让主要的任务先执行，不重要的任务等到比较空闲的时候再执行。就如应用先保证主线程渲染，其他加载数据的等任务等稍后异步再处理；二、支持并行；现在的CPU早已经进入了多核时代，多核就意味着任务可正真并行，而不是单一的流水线切分时间片。
 
@@ -216,7 +215,7 @@ Block与匿名类，两者非常相似，同属于闭包（closures）的概念�
 
 
 <br/><br/>
-#4 IDE
+# 4 IDE
 
 IDE，作为开发者必备的工具，其易用性和稳定性实实在在的影响着开发者的效率和心情。截止到2015年6月30日，两家自家的IDE发展都可圈可点。
 
@@ -231,7 +230,7 @@ IDE，作为开发者必备的工具，其易用性和稳定性实实在在的�
 
 
 <br/><br/>
-#5总结
+# 5 总结
 
 iOS到Android，到底有多远？其实就是要看你在原本的路上走了多远。作为某个平台上的应用开发者，除了深入理解平台之外，我们尽量多关注平台无关的基础知识，这些才能决定你能走多远。
 

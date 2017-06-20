@@ -51,7 +51,7 @@
 			<div class="nav pure-u-1 pure-u-md-3-4">
 			{% assign current = page.url | downcase | split: '/' %}
 				<a class="nav-item {% if current[1] == 'about' %}active{% endif %}" href="/about">ABOUT</a>
-				<a class="nav-item {% if current[1] == 'links' %}active{% endif %}" href="/links">LINKS</a>
+				<a class="nav-item {% if current[1] == 'guestbook' %}active{% endif %}" href="/guestbook">GUESTBOOK</a>
 				<a class="nav-item {% if current[1] == 'tags' %}active{% endif %}" href="/tags">TAGS</a>
 				<a class="nav-item {% if current[1] == 'categories' %}active{% endif %}" href="/categories">CATEGORIES</a>
 				<a class="nav-item {% if page.url == '/' %}active{% endif %}" href="/">HOME</a>
@@ -65,7 +65,7 @@
 			<a class="burger-item" href="/">HOME</a>
 			<a class="burger-item" href="/categories">CATEGORIES</a>
 			<a class="burger-item" href="/tags">TAGS</a>
-			<a class="burger-item" href="/links">LINKS</a>
+			<a class="burger-item" href="/guestbook">GUESTBOOK</a>
 			<a class="burger-item" href="/about">ABOUT</a>
 		</div>
 	</div>

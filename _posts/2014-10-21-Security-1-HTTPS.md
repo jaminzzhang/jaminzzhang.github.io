@@ -19,12 +19,12 @@ tags: [HTTPS, iOS]
 引读：[互联网全站HTTPS的时代已经到来](http://get.jobdeer.com/1607.get)
 
 <br/>
-#1. [HTTPS](http://en.wikipedia.org/wiki/HTTP_Secure)
+# 1. [HTTPS](http://en.wikipedia.org/wiki/HTTP_Secure)
 
 其实HTTPS从最终的数据解析的角度，与HTTP没有任何的区别，HTTPS就是将HTTP协议数据包放到SSL/TSL层加密后，在TCP/IP层组成IP数据报去传输，以此保证传输数据的安全；而对于接收端，在SSL/TSL将接收的数据包解密之后，将数据传给HTTP协议层，就是普通的HTTP数据。HTTP和SSL/TSL都处于OSI模型的应用层。从HTTP切换到HTTPS是一个非常简单的过程，在做具体的切换操作之前，我们需要了解几个概念：
 
 <br/><br/>
-##[SSL/TSL](http://en.wikipedia.org/wiki/Transport_Layer_Security)
+## [SSL/TSL](http://en.wikipedia.org/wiki/Transport_Layer_Security)
 
 关于SSL/TSL，阮一峰的两篇博客文章做了很好的介绍：
 
@@ -46,7 +46,7 @@ tags: [HTTPS, iOS]
 
 
 <br/><br/>
-##[数字证书](http://en.wikipedia.org/wiki/Public_key_certificate)
+## [数字证书](http://en.wikipedia.org/wiki/Public_key_certificate)
 
 数字证书是一个电子文档，其中包含了持有者的信息、公钥以及证明该证书有效的数字签名。而数字证书以及相关的公钥管理和验证等技术组成了[PKI](http://en.wikipedia.org/wiki/Public-key_infrastructure)（公钥基础设施）规范体系。一般来说，数字证书是由数字证书认证机构(Certificate authority，即CA)来负责签发和管理，并承担PKI体系中公钥合法性的检验责任；数字证书的类型有很多，而HTTPS使用的是SSL证书。
 
@@ -80,7 +80,7 @@ tags: [HTTPS, iOS]
 打个比喻：父（根CA数字证书）-子（CA数字证书）-孙（数字证书）三代人，假设父没有其他兄弟（相当于根CA机构是唯一的），假如子与父进行DNA亲子鉴定，检测DNA位点（即证书签名）相同，那就基本确定子是由父所生；孙与子一样。这样就能够确定孙肯定是源于父一脉，是父（根CA数字证书）的合法继承人。数字证书的验证就是基于同样的原理。
   
 <br/><br/>
-##[Basic Constraint](https://tools.ietf.org/html/rfc5280#section-4.2.1.9)校验漏洞
+## [Basic Constraint](https://tools.ietf.org/html/rfc5280#section-4.2.1.9)校验漏洞
 
 那是否不管多少层都可以这样一直信任下去呢？理论上是可行的，但会遇到一个问题。假设我从可信CA机构购买了一张证书，使用这张证书签发的证书是否也会被操作系统和浏览器信任呢？明显是不应该相信的，因为我并不是CA机构，假如我签发的证书也被信任的话，那我完全可以自己签发任何域名的证书来进行伪造攻击。这就是著名的[Basic Constraint](https://tools.ietf.org/html/rfc5280#section-4.2.1.9)校验漏洞，X.509证书中的Basic Constraint包含了这是不是一个CA机构，以及有效证书路径的最大深度（即，这个CA还能否继续签发CA机构证书及其签发子CA证书的路径深度）。但在几年前，包括微软和Apple都爆出了没有正确校验这些信息的漏洞。
 
@@ -102,13 +102,13 @@ Basic Constraint信息请看下图：
 
   
 <br/><br/>
-#2. 实现支持HTTPS  
+# 2. 实现支持HTTPS  
 
 
 首先，需要明确你使用HTTP/HTTPS的用途，因为OSX和iOS平台提供了多种API，来支持不同的用途，官方文档[《Making HTTP and HTTPS Requests》](https://developer.apple.com/library/ios/documentation/NetworkingInternetWeb/Conceptual/NetworkingOverview/WorkingWithHTTPAndHTTPSRequests/WorkingWithHTTPAndHTTPSRequests.html)有详细的说明，而文档[《HTTPS Server Trust Evaluation》](https://developer.apple.com/library/ios/technotes/tn2232/_index.html)则详细讲解了HTTPS验证相关知识，这里就不多说了。本文主要讲解我们最常用的NSURLConnection支持HTTPS的实现（NSURLSession的实现方法类似，只是要求授权证明的回调不一样而已），以及怎么样使用AFNetworking这个非常流行的第三方库来支持HTTPS。本文假设你对HTTP以及NSURLConnection的接口有了足够的了解。
 
 <br/>
-##验证证书的API   
+## 2.1 验证证书的API   
 
 相关的Api在[Security Framework](https://developer.apple.com/library/ios/documentation/Security/Reference/SecurityFrameworkReference/_index.html)中，验证流程如下：
 
@@ -130,7 +130,7 @@ iOS授权验证的API和流程大概了解了，下面，我们看看在NSURLCon
   
 
 <br/>
-##使用NSURLConnection支持HTTPS的实现 
+## 2.2 使用NSURLConnection支持HTTPS的实现 
 
 
 <br/>
@@ -216,7 +216,7 @@ self.trustedCertificates = @[CFBridgingRelease(certificate)];
 
 
 <br/>
-##使用AFNetworking来支持HTTPS
+## 2.3 使用AFNetworking来支持HTTPS
 
 [AFNetworking](https://github.com/AFNetworking/AFNetworking)是iOS/OSX开发最流行的第三方开源库之一，其作者是非常著名的iOS/OSX开发者[Mattt Thompson](https://github.com/mattt)，其博客[NSHipster](http://nshipster.com/)也是iOS/OSX开发者学习和开阔技术视野的好地方。AFNetworking已经将上面的逻辑代码封装好，甚至更完善，在AFSecurityPolicy文件中，有兴趣可以阅读这个模块的代码；
 
@@ -265,7 +265,7 @@ requestOperationManager.securityPolicy = securityPolicy;
 
 
 <br/><br/>
-#3. 总结
+# 3. 总结
 
 虽然HTTPS相比于HTTP来说，会有一定的性能上的劣势，但对于网络飞速发展，移动设备的性能成倍增长的今天，安全才是我们更应该去考虑的。全网HTTPS并不是那么遥远。  
 

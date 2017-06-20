@@ -26,19 +26,19 @@ tags: [UI, iOS, UIView, UIViewController, MVC, MVP, MVVM]
 
 
 <br/><br/>
-#1. 基础与本质
+# 1. 基础与本质
 
 终端App开发区别于后端开发最大的不同，就是终端开发很大部分的逻辑是为用户提供界面以供人机交互，即所谓的UI(User Interface)。所以所有的UI架构主要关注三大模块：界面布局管理，渲染及动画、事件响应；
 
 <br/>
-###1.1 布局管理
+### 1.1 布局管理
 即在规定的坐标系统上，按照一定的层级顺序位置大小排布在容器内。一个UI系统必然有个基于坐标的布局管理系统，不管是Windows、Sysbian，还是Andorid、iOS。好的布局管理机制直接影响界面逻辑实现的难易程度；
 
 我们现在日常接触到的App的UI坐标系统都是二维的，我们现在玩的3D游戏，受限于二维的展示屏幕，所以实质上只是三维在二维上的映射投影。我们一直在往更高的维度发展：全息影像、Hololens等等。在此可以设想下，未来我们构建界面的布局管理很可能就是基于真实三维坐标。
 
 
 <br/>
-###1.2 动画及渲染
+### 1.2 动画及渲染
 
 UI之所以叫User Interface，就是因为UI通过视觉上的展示，为用户提供信息。这些信息的展示需要通过一系列复杂的计算，最后操作液晶体展示在显示屏上，这一系列过程就是渲染和动画；
 
@@ -57,12 +57,12 @@ UI之所以叫User Interface，就是因为UI通过视觉上的展示，为用�
 
 
 <br/>
-###1.3 事件响应
+### 1.3 事件响应
 
 UI除了展示信息之外，还需要接收并响应用户的点击、手势、摇晃等事件，经过一系列操作后更新展示信息，展示给用户；正确及时地响应用户的操作并给予反馈，是良好用户体验的保证。为何Android设备普遍给人的感觉比iOS设备要卡，其中一个主要的原因是iOS系统将响应用户事件放在主线程的最高优先级。
 
 <br/>
-###1.4 UI系统架构
+### 1.4 UI系统架构
 从整体理解了上述三个方面，你会对UI架构有系统认识。iOS中的UI系统架构如下：
 
 ![iOS UI Arch](/assets/images/2015-12/UI_Arch.jpg)
@@ -71,7 +71,7 @@ UI除了展示信息之外，还需要接收并响应用户的点击、手势、
 
 
 <br/><br/>
-#2.  View
+# 2.  View
 
 UIView是UIKit中最基本控件，就如同NSObject基本上是Cocoa库内所有类的基类一样，UIView也是UIKit中所有界面控件的基类。只要你愿意，你甚至只用UIView就可以搭建你的App（不过iOS9做了约束，必须设置keyWindow的rootViewControler）。
 
@@ -89,7 +89,7 @@ UIView是UIKit中最基本控件，就如同NSObject基本上是Cocoa库内所�
 
 
 <br/>
-##2.1 UIView 与 CALayer
+## 2.1 UIView 与 CALayer
 
 我们应该都知道每个UIView都包含了一个CALayer，就算你没直接看过CALayer，应该也使用过。比如给一个View切个圆角：```view.layer.cornerRadius = 5.0f;```；加个边框：```view.layer.borderWidth = 1.0f; view.layer.borderColor = [UIColor darkGrayColor].CGColor;```，这里使用的layer就是CALayer。
 
@@ -102,7 +102,7 @@ CALayer是QuartzCore库内的类，是iOS上最基本的绘制单元；而UIView
 以上，是UIView于CALayer的主要的关系。
 
 <br/>
-##2.2 Offscreen Render
+## 2.2 Offscreen Render
 
 当你尚在懵懂未知的开发初期，在写UIScrollView及其子类（UITableView、UICollectionView）时，一定会遇到滚动不流畅，经常卡顿的情况；你认真研究代码，发现你逻辑代码都放到了异步线程，主线程做的都是渲染界面的活，为什么会卡顿？然后你想老手寻求帮助，老手会让你去掉圆角、半透明和阴影之类，App又重回丝般顺滑；你不知道为什么，问老手，他可能会很详细跟你解释一通，然后你一知半解地点点头，脑中一片茫然；较好的情况，也许你依稀记得这么一个词：离屏渲染（Offscreen Render）。那到底什么是Offscreen Render？为什么Offscreen Render会导致卡顿？
 
@@ -151,14 +151,14 @@ Offscreen Render为什么卡顿，从上图我们就可以知道，Offscreen Ren
 
 
 <br/>
-##2.3 设计与实践
+## 2.3 设计与实践
 
 以上几节，对View在开发过程中经常遇到，但并不容易深入理解的概念进行了讨论。接下来，我想脱离View的具体概念，谈谈本人在View设计和开发中的一些实践经验；
 
 
 
 <br/>
-###2.3.1 精简扁平的View层次结构
+### 2.3.1 精简扁平的View层次结构
 
 复杂的View层次结果不仅会影响渲染效率，而且也会造成代码的臃肿，会造成不可预料的问题并且难以定位；怎么样维护一个精简扁平的View层次结构呢？原则如下：
 
@@ -177,14 +177,14 @@ Offscreen Render为什么卡顿，从上图我们就可以知道，Offscreen Ren
 
 
 <br/>
-###2.3.2 通用控件；
+### 2.3.2 通用控件；
 
 每一个程序员都可以建立自己的代码库，同理，每一位移动开发程序员都可以建立自己的通用控件代码库。这个库内的控件，可以是你自己写的，也可以是优秀的第三方开源控件。建立控件库，除了能够避免重新造轮子，大大提高我们的开发效率，还有更为重要的一点：在运用、改造、重构中掌握接口设计解耦，甚至是架构的知识和经验。
 
 每个App的UI设计、交互、布局和配色往往千差万别，但总脱离不出移动App这一范畴，也就决定了在某些通用的控件交互上会保持一致性，以让用户依据自己在移动应用上的使用经验就能轻松快速上手使用，这就是App的移动性。所以通用控件的适用场景往往是很“通用”的。比如下拉刷新、加载更多、Tab Bar、提示Tips、加载错误重新加载等等。在新的App或者功能模块上运用这些控件时，你就会思考怎么让控件更加通用，即不影响旧的逻辑，又能够适用新的需求，这对于做界面的架构设计是非常好的锻炼。
 
 <br/>
-###2.3.3  合理运用VC在替代View组合复杂界面；
+### 2.3.3  合理运用VC在替代View组合复杂界面；
 
 在界面开发过程中，我们常常会遇到复杂的界面，比如多页界面、多种布局方式展示多业务的首页等，但由于很大部分开发者已经对“一屏就是一个VC”这一初学者的习惯奉为教条，写出一个庞然大View，再加上复杂的逻辑代码，这一块的代码很可能就演变成了谁都不敢动的禁区。一个VC可以管理多个VC，所以合理的使用VC来替代View进行复杂界面组合，不仅能够将复杂界面切分成更小的粒度，逻辑代码也同步合理划分，便于维护和重构；而依托VC的机制，还能View和数据的动态加载管理。
 
@@ -194,7 +194,7 @@ Offscreen Render为什么卡顿，从上图我们就可以知道，Offscreen Ren
 
 
 <br/><br/>
-#3.  ViewController
+# 3.  ViewController
 
 上一节关于View的章节已讨论了iOS界面机制，这一节则主要是来谈谈在写界面过程中的设计问题和基本规范；
 
@@ -216,7 +216,7 @@ ViewController在iOS只是一个非常重要的概念，它是我们在开发界
 
 
 <br/>
-##3.1 轻VC
+## 3.1 轻VC
 
 轻VC是前两年非常火的名词，现在似乎已经成为了一种业界规范或者是惯例。同上所述，一个VC的类，如果有效代码超过了500行，则表示这个类看是变得臃肿而难以维护；到达800行，只能通过搜索来定位代码时，重构已势在必行；
 
@@ -242,7 +242,7 @@ ViewController在iOS只是一个非常重要的概念，它是我们在开发界
 
 
 <br/>
-##3.2 VC的设计
+## 3.2 VC的设计
 
 相对于View关注于布局和展示，VC更关注设计和管理。本节以一个实例，来简单介绍在一个完整App中的VC设计。
 
@@ -265,7 +265,7 @@ ViewController在iOS只是一个非常重要的概念，它是我们在开发界
 
 
 <br/>
-#4. MVC、MVP、MVVM
+# 4. MVC、MVP、MVVM
 
 **MVC**：
 
@@ -293,7 +293,7 @@ ViewController在iOS只是一个非常重要的概念，它是我们在开发界
 本文并不打算将MVC、MVP、MVVM这个几个通用架构设计模式的概念统统在这里叙述一遍，上面三个图基本上能够很明白地对比出三者之间的差异。也许与你在网上看到的不尽相同，这是因为以上三图更立足于iOS平台。
 
 <br/>
-##4.1 MVC
+## 4.1 MVC
 
 我们最初看到的MVC设计模式图可能是这样的：
 
@@ -313,7 +313,7 @@ ViewController在iOS只是一个非常重要的概念，它是我们在开发界
 MVC从施乐帕克实验室提出至今，已经应用到各种应用开发领域中：Web App可以用MVC，iOS/Android/Windows客户端应用也用MVC，Web前端也在用MVC，等等；这些几乎涵盖了我们常见的开发领域，所以MVC其实已经超越了他原本最初的设计，基于所有涉及展示的应用都能套上MVC，只不过不同的平台在设计上略有差别。而MVP和MVVM，也不过是MVC的衍生变种，除这两者之外，还有我们没怎么见过的[HMVC](https://en.wikipedia.org/wiki/Hierarchical_model–view–controller)、[MVA](https://en.wikipedia.org/wiki/Model–view–adapter)等。
 
 <br/>
-##4.2 Model Layer
+## 4.2 Model Layer
 
 在讨论MVP和MVVM之前，我想先明确一个经常被误解的概念：Model。由于Model这个词太通用化，如数据Model，数据库Model，这就导致了Model这一概念理解差异化，简单的说，就是被玩坏。抛开其他，我们来看看常见的定义：
 
@@ -349,7 +349,7 @@ Communication: User actions in the view layer that create or modify data are com
 所以这里需要明确的一个概念是：在MVC的设计模式中，Model是一个Layer，而不只是一个数据模型（Data Model）类。总体来说，Model Layer 包含了数据模型，以及管理这些数据相关的逻辑计算，如本地数据变化、数据缓存、从网络请求数据等业务逻辑。关于这个问题，还可以参考这篇文章：《[iOS应用架构谈 view层的组织和调用方案](http://casatwy.com/iosying-yong-jia-gou-tan-viewceng-de-zu-zhi-he-diao-yong-fang-an.html)》。但有一点需要说明：该文章更倾向于从Model Object上思考Model的定义，因为里面的关于Model的示例是从数据模型中扩展出业务接口；而本人则更倾向于从Model Layer来思考Model，即Model并不限于数据模型，可以是数据管理类（各种Manager）、请求队列管理等等。
 
 <br/>
-##4.3 MVP VS MVVM
+## 4.3 MVP VS MVVM
 
 上一节关于Model Layer中推荐的文章《[iOS应用架构谈 view层的组织和调用方案](http://casatwy.com/iosying-yong-jia-gou-tan-viewceng-de-zu-zhi-he-diao-yong-fang-an.html)》对MVC和MVVM都做了非常详细的讨论，是一篇非常不错的文章，推荐各位阅读，那么本节就来说说MVP，以及我为什么更倾向于选择MVP作为App架构设计中的设计框架。
 
@@ -365,7 +365,7 @@ MVVM的VM(View Model)到V(View)，比MVP的P(Presenter)到V(View)，多了数据
 
 
 <br/>
-##4.4 架构设计模式应用
+## 4.4 架构设计模式应用
 
 无论MVC、MVP还是MVVM，都是指导我们进行架构设计的模式，并非可以生搬硬套的；而且在实际的应用中，对于这些设计模式总会有不同的理解，并且需要根据项目需求进行必要的调整；更为重要的是在我们App的架构设计中，处理好Model-View-Controller之间的关系只是基础，最主要的挑战来自于复杂的业务逻辑和场景，这才是体现一个架构师能力所在。
 
@@ -385,7 +385,7 @@ MVVM的VM(View Model)到V(View)，比MVP的P(Presenter)到V(View)，多了数据
 
 
 <br/><br/>
-##5 总结
+## 5 总结
 
 以上四个章节，先从UI整体出发，到剖析UIView几点重要机制，接着讨论怎么用好VC这个UI中重要的管理角色，最后则漫谈了MVC/MVVM/MVP几个架构设计模式的异同和实践应用，想通过以点带面，让我们在关注了具体实现之后，能够脱离出来，从俯视下我们App开发更为整体核心的部分。
 
@@ -408,4 +408,8 @@ MVVM的VM(View Model)到V(View)，比MVP的P(Presenter)到V(View)，多了数据
 * [iOS应用架构谈 view层的组织和调用方案](http://casatwy.com/iosying-yong-jia-gou-tan-viewceng-de-zu-zhi-he-diao-yong-fang-an.html)
 
 
+
+---
+
+版权所有，转载请保留[Jaminzzhang](http://oncenote.com/)署名
 

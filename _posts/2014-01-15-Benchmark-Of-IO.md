@@ -11,9 +11,9 @@ title: iOS文件操作(IO)的Benchmark
   
 &nbsp;
 
-##1、读取文件信息
+## 1、读取文件信息
 
-####1）检查文件是否存在
+#### 1）检查文件是否存在
 API:
 <div>
 <pre><code>- (BOOL)fileExistsAtPath:(NSString *)path;
@@ -31,7 +31,7 @@ SEL(fileExistsAtPath:isDirectory:)    次数：10000次(1W次)         耗
 
 *ps：假如目标路径的文件是软链接文件，fileExistsAtPath会源溯到该软链接文件的目标路径来检查文件是否存在(If the final element in path specifies a symbolic link, this method traverses the link and returns YES or NO based on the existence of the file at the link destination.)。因此检查软链文件是否存在的时候需要特别注意，如检查到软链文件对应的目标路径文件不存在（实际软链还存在），此时再去创建一个软链文件的话会报错，说软链文件已存在。*
 
-####2）获取文件信息
+#### 2）获取文件信息
 API
 <div>
 <pre><code>- (NSDictionary *)attributesOfItemAtPath:(NSString *)path error:(NSError **)error</code></pre>
@@ -42,7 +42,7 @@ Benchmark结果：
 文件夹    次数：10000次(1W次)          耗时：5.700s ~ 5.800s
 
 
-####3）遍历文件
+#### 3）遍历文件
 API
 <div>
 <pre><code>
@@ -71,9 +71,9 @@ SEL(enumeratorAtURL:includingPropertiesForKeys:options:errorHandler:)       �
 
 &nbsp;
 
-##2、文件操作
+## 2、文件操作
 
-####1）创建文件
+#### 1）创建文件
 API:
 <div>
 <pre><code>- (BOOL)createFileAtPath:(NSString *)path contents:(NSData *)data attributes:(NSDictionary *)attr;
@@ -107,7 +107,7 @@ atomically:NO      文件大小：1MB               次数：1000次 �
 
 从测试来看，创建文件方法SEL(createFileAtPath: contents: attributes: )与SEL(writeToFile:atomically:YES)在效率上没有什么区别，因此估计两者使用了逻辑是一致的；SEL(writeToFile:atomically:NO) 比SEL(writeToFile:atomically:YES)效率高也是合乎情理（因为atomically:YES是先写到一个临时备份文件然后再改名的，以此来保证操作的原子性，防止写数据过程中出现其他错误），但需要注意的是，在创建空文件时，SEL(writeToFile:atomically:NO)效率非常之高，可以考虑在频繁创建空文件的时候使用SEL(writeToFile:atomically:NO)。
 
-####2）拷贝文件
+#### 2）拷贝文件
 API:
 <div>
 <pre><code>- (BOOL)copyItemAtPath:(NSString *)srcPath toPath:(NSString *)dstPath error:(NSError **)error
@@ -118,7 +118,7 @@ Benchmark结果：
 文件大小：1MB            次数：1000次               耗时：40.800s ~ 42.000s  
 文件大小：2MB            次数：1000次               耗时：76.700s ~ 77.000s
 
-####3）移动文件
+#### 3）移动文件
 API:  
 - (BOOL)moveItemAtPath:(NSString *)srcPath toPath:(NSString *)dstPath error:(NSError \*\*)error  
 - (BOOL)moveItemAtURL:(NSURL *)srcURL toURL:(NSURL *)dstURL error:(NSError **)error
@@ -128,7 +128,7 @@ Benchmark结果：
 
 &nbsp;
 
-####4）删除文件
+#### 4）删除文件
 API:
 <div>
 <pre><code>- (BOOL)removeItemAtPath:(NSString *)path error:(NSError **)error
@@ -139,7 +139,7 @@ Benchmark结果：
 文件大小：1MB~10M            次数：1000次               耗时：1.560s ~ 1.680s
 
 
-####5）创建硬链接
+#### 5）创建硬链接
 API：
 <div>
 <pre><code>- (BOOL)linkItemAtPath:(NSString *)srcPath toPath:(NSString *)dstPath error:(NSError **)error 
@@ -153,7 +153,7 @@ Benchmark结果：
 创建文件硬链接在效率上与文件大小无关，而且硬链接所占用的空间极小，因此是拷贝文件非常好的替换方法。需要注意的是，针对目录创建硬链接，会创建一个新的目标目录，然后对源目录里面的文件创建硬链接。为了避免无限递归，在子目录里面创建目录的硬链接是不被允许的。
 
 
-####6）创建软链接
+#### 6）创建软链接
 
 API：
 <div>
@@ -171,12 +171,12 @@ Benchmark结果：
 
 &nbsp;
 
-##3、文件Handle读写
+## 3、文件Handle读写
 
 将文件读写的Benchmark独立出来是因为文件读写主要测试的是NSFileHandle的性能，而不再是NSFileManager的操作性能测试了。
 
 
-####1）写文件：
+#### 1）写文件：
 API：
 <div>
 <pre><code>- (void)writeData:(NSData *)data;
@@ -194,7 +194,7 @@ ps：Syn表示调用synchronizeFile来flush缓存
 从上面的Benchmark可以看到，对于一定量的数据来说，缓冲区到硬盘的IO操作是由系统控制的，因此只在最后Syn的情况下，各种大小的字节数据writeData写入缓冲区使用的时间几乎是一样的，而每次writeData之后立刻调用Syn，则会让IO的操作增加，导致耗时的增加。所以，假如数据是可恢复的，那建议在写完数据所有数据之后再调用Syn。IO的写入效率为65M/s左右。
 
 
-####2）读文件：
+#### 2）读文件：
 API：
 <div>
 <pre><code>- (NSData *)readDataToEndOfFile; - (NSData *)readDataOfLength:(NSUInteger)length;</code></pre>
@@ -215,7 +215,7 @@ Benchmark结果
 >引自Apple 文档：https://developer.apple.com/library/ios/documentation/FileManagement/Conceptual/FileSystemProgrammingGuide/PerformanceTips/PerformanceTips.html
 Choose an appropriate read buffer size. When reading data from the disk to a local buffer, the buffer size you choose can have a dramatic effect on the speed of the operation. If you are working with relatively large files, it does not make sense to allocate a 1K buffer to read and process the data in small chunks. Instead, create a larger buffer (say 128K to 256K in size) and read much or all of the data into memory before processing it. The same rules apply for writing data to the disk: write data as sequentially as you can using a single file-system call.
 
-####2）Seek文件：
+#### 3）Seek文件：
 API：
 <div>
 <pre><code>- (unsigned long long)seekToEndOfFile; - (void)seekToFileOffset:(unsigned long long)offset;</code></pre>

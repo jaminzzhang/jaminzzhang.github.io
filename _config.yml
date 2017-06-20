@@ -1,10 +1,19 @@
-markdown: rdiscount
+markdown: kramdown
 permalink: /:year/:month/:day/:title/
 url: http://jaminzzhang.github.com
 author: jaminzzhang
 highlighter: pygments
-gems: [jekyll-paginate]
+exclude: [".rvmrc", ".rbenv-version", "README.md", "Rakefile", "changelog.md", "CNAME", "Gemfile", "Gemfile.lock"]
+plugins: [jekyll-paginate]
+lsi: false
 safe: true
 paginate: 16
 auto: true
 
+
+kramdown:
+  auto_ids: true,
+  footnote_nr: 1
+  entity_output: as_char
+  toc_levels: 1..6
+  enable_coderay: false
