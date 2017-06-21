@@ -2,7 +2,7 @@ markdown: kramdown
 permalink: /:year/:month/:day/:title/
 url: http://jaminzzhang.github.com
 author: jaminzzhang
-highlighter: pygments
+highlighter: rouge #pygments
 exclude: [".rvmrc", ".rbenv-version", "README.md", "Rakefile", "changelog.md", "CNAME", "Gemfile", "Gemfile.lock"]
 plugins: [jekyll-paginate]
 lsi: false
