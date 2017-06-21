@@ -402,8 +402,6 @@ MVVM的VM(View Model)到V(View)，比MVP的P(Presenter)到V(View)，多了数据
 * [iOS Developer Library#Getting Started with Graphics & Animation](https://developer.apple.com/library/prerelease/mac/referencelibrary/GettingStarted/GS_GraphicsImaging/_index.html)
 * [#Objc 3-View](https://www.objc.io/issues/3-views/)
 * [#Objc 1 : Lighter View Controllers](https://www.objc.io/issues/1-view-controllers/)
-
-
 * [被误解的MVC和被神化的MVVM](http://blog.devtang.com/blog/2015/11/02/mvc-and-mvvm/)
 * [iOS应用架构谈 view层的组织和调用方案](http://casatwy.com/iosying-yong-jia-gou-tan-viewceng-de-zu-zhi-he-diao-yong-fang-an.html)
 
